@@ -62,11 +62,11 @@ public class ColorSequenceGenerator : MonoBehaviour
             {
                 CheckInput(Color.red);
             }
-            if (Input.GetKeyDown(KeyCode.Space)) // 左鍵對應黃色
+            if (Input.GetKeyDown(KeyCode.Space)) // 空白鍵對應藍色
             {
                 CheckInput(Color.blue);
             }
-            if (Input.GetKeyDown(KeyCode.DownArrow)) // 下鍵對應藍色
+            if (Input.GetKeyDown(KeyCode.DownArrow)) // 下鍵對應黃色
             {
                 CheckInput(Color.yellow);
             }

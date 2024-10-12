@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CarMovement : MonoBehaviour
 {
@@ -65,14 +66,27 @@ public class CarMovement : MonoBehaviour
         {
             Debug.Log("Crashed into an obstacle! Returning to start position...");
             // 返回起始位置
-            ResetPosition();
+            RestartCurrentLevel();
         }
     }
 
     // 重置位置和方向
-    void ResetPosition()
+   /* void ResetPosition()
     {
         transform.position = startPosition; // 返回起始位置
         transform.rotation = Quaternion.identity; // 重置方向（可选）
+    }*/
+
+
+ // 這個方法可以在 UI 按鈕或條件觸發時調用
+    public void RestartCurrentLevel()
+    {
+        // 取得當前的場景名稱
+        string currentSceneName = SceneManager.GetActiveScene().name;
+
+        // 重新加載當前場景
+        SceneManager.LoadScene(currentSceneName);
     }
+
+
 }
