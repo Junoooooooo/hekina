@@ -6,19 +6,21 @@ using UnityEngine.SceneManagement;
 public class CarMovement : MonoBehaviour
 {
     public float speed = 5f; // 移动速度
-    public float turnAngle = 90f; // 转动角度
-    private Vector3 startPosition; // 车子的起始位置
+    public float turnSpeed = 5f; // 旋转的速度，用于平滑过渡
+    private Quaternion targetRotation; // 目标旋转
     private Vector3 currentDirection; // 当前前进方向
 
     void Start()
     {
         currentDirection = transform.forward; // 初始前进方向
+        targetRotation = transform.rotation; // 初始化目标旋转为当前旋转
     }
 
     void Update()
     {
         HandleTurnInput(); // 处理转弯输入
         MoveForward(); // 持续向前移动
+        SmoothRotate(); // 平滑地旋转到目标方向
     }
 
     // 向当前方向移动
@@ -26,6 +28,16 @@ public class CarMovement : MonoBehaviour
     {
         // 根据当前方向移动
         transform.Translate(currentDirection * speed * Time.deltaTime, Space.World);
+    }
+
+    // 平滑旋转到目标方向
+    void SmoothRotate()
+    {
+        // 使用 RotateTowards 实现平滑旋转，逐渐接近目标旋转
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+
+        // 更新当前前进方向为旋转后的方向
+        currentDirection = transform.forward;
     }
 
     // 处理转弯输入
@@ -46,47 +58,36 @@ public class CarMovement : MonoBehaviour
     // 左转处理
     void TurnLeft()
     {
-        // 旋转 90 度并更新当前方向
-        transform.Rotate(0, -turnAngle, 0); // 左转
-        currentDirection = transform.forward; // 更新当前方向
-        Debug.Log("Turned Left!");
+        // 更新目标旋转为当前旋转的左转 90 度
+        targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 90f, 0);
+        Debug.Log("Turning Left (smooth)!");
     }
 
     // 右转处理
     void TurnRight()
     {
-        // 旋转 90 度并更新当前方向
-        transform.Rotate(0, turnAngle, 0); // 右转
-        currentDirection = transform.forward; // 更新当前方向
-        Debug.Log("Turned Right!");
+        // 更新目标旋转为当前旋转的右转 90 度
+        targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 90f, 0);
+        Debug.Log("Turning Right (smooth)!");
     }
+
+    // 碰撞检测
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Obstacle")) // 检测到与障碍物的碰撞
+        if (collision.gameObject.CompareTag("Obstacle")) // 碰撞到障碍物
         {
-            Debug.Log("Crashed into an obstacle! Returning to start position...");
-            // 返回起始位置
-            RestartCurrentLevel();
+            Debug.Log("Crashed into an obstacle! Restarting level...");
+            RestartCurrentLevel(); // 重启场景
         }
     }
 
-    // 重置位置和方向
-   /* void ResetPosition()
-    {
-        transform.position = startPosition; // 返回起始位置
-        transform.rotation = Quaternion.identity; // 重置方向（可选）
-    }*/
-
-
- // 這個方法可以在 UI 按鈕或條件觸發時調用
+    // 重新加载当前场景
     public void RestartCurrentLevel()
     {
-        // 取得當前的場景名稱
+        // 获取当前场景名称
         string currentSceneName = SceneManager.GetActiveScene().name;
 
-        // 重新加載當前場景
+        // 重新加载当前场景
         SceneManager.LoadScene(currentSceneName);
     }
-
-
 }
