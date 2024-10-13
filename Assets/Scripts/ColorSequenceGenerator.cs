@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class ColorSequenceGenerator : MonoBehaviour
 {
     public GameObject player; // 車子的參考
-    public float triggerDistance = 23f; // 距離CUBE多少時開始生成顏色
+    public float triggerDistance = 15f; // 距離CUBE多少時開始生成顏色
     public GameObject colorObjectPrefab; // 顏色物件的預製件
     public GameObject[] cubes; // 存放場景中所有CUBE
     public Light[] cubeLights; // 每個CUBE對應的燈光
@@ -76,22 +76,54 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     IEnumerator DisplayColorSequence(GameObject cube)
     {
-        // 循環遍歷顏色序列
         for (int i = 0; i < cubeColorSequences[cube].Length; i++)
         {
-            // 直接修改現有CUBE的顏色，而不是創建新的CUBE
-            cube.GetComponent<Renderer>().material.color = cubeColorSequences[cube][i];
+            Color currentColor = cubeColorSequences[cube][i];
 
-            yield return new WaitForSeconds(0.3f); // 顯示顏色多少秒
-            cube.GetComponent<Renderer>().material.color = Color.white; // 重置顏色為白色或其他預設顏色
+            // 設置發光顏色
+            Renderer cubeRenderer = cube.GetComponent<Renderer>();
+            cubeRenderer.material.SetColor("_EmissionColor", currentColor); // 設置發光顏色
+            DynamicGI.SetEmissive(cubeRenderer, currentColor); // 更新全局光照系統
 
-            yield return new WaitForSeconds(0.3f); // 等待多少秒再顯示下一個顏色
+            // 執行顏色漸變
+            yield return StartCoroutine(ColorFade(cube, currentColor, 0.3f));
+
+            yield return new WaitForSeconds(0.1f); // 顯示顏色多少秒
+
+            // 重置顏色為白色或其他預設顏色
+            yield return StartCoroutine(ColorFade(cube, Color.white, 0.3f)); // 漸變回白色
+
+            // 重置發光顏色
+            cubeRenderer.material.SetColor("_EmissionColor", Color.black); // 重置發光顏色為黑色
+            DynamicGI.SetEmissive(cubeRenderer, Color.black); // 更新全局光照系統
+
+            yield return new WaitForSeconds(0.1f); // 等待多少秒再顯示下一個顏色
         }
 
         // 顯示完畢後，開始接受輸入
         isInputActive[cube] = true;
         currentInputIndex[cube] = 0;
     }
+
+
+
+
+    IEnumerator ColorFade(GameObject cube, Color targetColor, float duration)
+    {
+        Renderer cubeRenderer = cube.GetComponent<Renderer>();
+        Color initialColor = cubeRenderer.material.color;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            cubeRenderer.material.color = Color.Lerp(initialColor, targetColor, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null; // 等待下一幀
+        }
+
+        cubeRenderer.material.color = targetColor; // 確保最終顏色設定為目標顏色
+    }
+
 
 
 
@@ -107,7 +139,13 @@ public class ColorSequenceGenerator : MonoBehaviour
             if (currentInputIndex[cube] >= colorSequence.Length)
             {
                 Debug.Log("Cube " + cube.name + " sequence completed!");
-                cubeLights[System.Array.IndexOf(cubes, cube)].enabled = true; // 點亮該CUBE的燈光
+
+                // 獲取對應的燈光並設置為白光亮度50
+                Light cubeLight = cubeLights[System.Array.IndexOf(cubes, cube)];
+                cubeLight.color = Color.white; // 設置燈光顏色為白色
+                cubeLight.intensity = 30f; // 設置燈光亮度為50
+                cubeLight.enabled = true; // 點亮該CUBE的燈光
+
                 isInputActive[cube] = false; // 停止輸入
             }
         }
@@ -117,4 +155,6 @@ public class ColorSequenceGenerator : MonoBehaviour
             currentInputIndex[cube] = 0; // 重置輸入索引
         }
     }
+
+
 }
