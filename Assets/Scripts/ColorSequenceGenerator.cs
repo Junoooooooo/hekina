@@ -1,49 +1,62 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
+public class CubeLightInfo
+{
+    public GameObject cube; // CUBEç‰©ä»¶
+    public Light[] lights; // èˆ‡è©²CUBEå°æ‡‰çš„ç‡ˆå…‰
+    public GameObject[] emissiveObjects; // èˆ‡è©²CUBEå°æ‡‰çš„ç™¼å…‰ç‰©ä»¶
+}
+
 public class ColorSequenceGenerator : MonoBehaviour
 {
-    public GameObject player; // ¨®¤lªº°Ñ¦Ò
-    public float triggerDistance = 15f; // ¶ZÂ÷CUBE¦h¤Ö®É¶}©l¥Í¦¨ÃC¦â
-    public GameObject colorObjectPrefab; // ÃC¦âª«¥óªº¹w»s¥ó
-    public GameObject[] cubes; // ¦s©ñ³õ´º¤¤©Ò¦³CUBE
-    public Light[] cubeLights; // ¨C­ÓCUBE¹ïÀ³ªº¿O¥ú
+    public GameObject player; // è»Šå­çš„åƒè€ƒ
+    public float triggerDistance = 15f; // è·é›¢CUBEå¤šå°‘æ™‚é–‹å§‹ç”Ÿæˆé¡è‰²
+    public GameObject colorObjectPrefab; // é¡è‰²ç‰©ä»¶çš„é è£½ä»¶
+    public CubeLightInfo[] cubeLightInfos; // å­˜æ”¾æ¯å€‹CUBEåŠå…¶å°æ‡‰ç‡ˆå…‰çš„è³‡è¨Š
 
-    private Dictionary<GameObject, Color[]> cubeColorSequences = new Dictionary<GameObject, Color[]>(); // ¨C­ÓCUBEªºÃC¦â§Ç¦C
-    private Dictionary<GameObject, int> currentInputIndex = new Dictionary<GameObject, int>(); // ¨C­ÓCUBE·í«eªº¿é¤J¯Á¤Ş
-    private Dictionary<GameObject, bool> isInputActive = new Dictionary<GameObject, bool>(); // ¨C­ÓCUBE¬O§_¥i±µ¨ü¿é¤J
-    private Dictionary<GameObject, bool> hasTriggered = new Dictionary<GameObject, bool>(); // ¨C­ÓCUBE¬O§_¤wÄ²µoÃC¦â¥Í¦¨
+    private Dictionary<GameObject, Color[]> cubeColorSequences = new Dictionary<GameObject, Color[]>(); // æ¯å€‹CUBEçš„é¡è‰²åºåˆ—
+    private Dictionary<GameObject, int> currentInputIndex = new Dictionary<GameObject, int>(); // æ¯å€‹CUBEç•¶å‰çš„è¼¸å…¥ç´¢å¼•
+    private Dictionary<GameObject, bool> isInputActive = new Dictionary<GameObject, bool>(); // æ¯å€‹CUBEæ˜¯å¦å¯æ¥å—è¼¸å…¥
+    private Dictionary<GameObject, bool> hasTriggered = new Dictionary<GameObject, bool>(); // æ¯å€‹CUBEæ˜¯å¦å·²è§¸ç™¼é¡è‰²ç”Ÿæˆ
 
-    private Color[] colors = { Color.red, Color.yellow, Color.blue }; // ¥i¥ÎÃC¦â
+    private Color[] colors = { Color.red, Color.yellow, Color.blue }; // å¯ç”¨é¡è‰²
 
     void Start()
     {
-        cubes = GameObject.FindGameObjectsWithTag("CUBE"); // §ä¨ì³õ´º¤¤ªº©Ò¦³CUBE
-
-        for (int i = 0; i < cubes.Length; i++)
+        foreach (var cubeLightInfo in cubeLightInfos)
         {
-            GenerateColorSequenceForCube(cubes[i]); // ¬°¨C­ÓCUBE¥Í¦¨ÃC¦â§Ç¦C
-            currentInputIndex[cubes[i]] = 0; // ªì©l¤Æ¿é¤J¯Á¤Ş
-            isInputActive[cubes[i]] = false; // ªì©l¤Æ¿é¤Jª¬ºA
-            hasTriggered[cubes[i]] = false; // ªì©l¤ÆÄ²µoª¬ºA
+            GameObject cube = cubeLightInfo.cube; // ç²å–CUBE
+            GenerateColorSequenceForCube(cube); // ç‚ºæ¯å€‹CUBEç”Ÿæˆé¡è‰²åºåˆ—
+            currentInputIndex[cube] = 0; // åˆå§‹åŒ–è¼¸å…¥ç´¢å¼•
+            isInputActive[cube] = false; // åˆå§‹åŒ–è¼¸å…¥ç‹€æ…‹
+            hasTriggered[cube] = false; // åˆå§‹åŒ–è§¸ç™¼ç‹€æ…‹
+
+            // åˆå§‹æ™‚é—œé–‰ç™¼å…‰ç‰©ä»¶çš„ç™¼å…‰æ•ˆæœ
+            foreach (GameObject emissiveObject in cubeLightInfo.emissiveObjects)
+            {
+                Renderer emissiveRenderer = emissiveObject.GetComponent<Renderer>();
+                emissiveObject.GetComponent<MeshRenderer>().material.DisableKeyword("_EMISSION");
+            }
         }
     }
 
-
     void Update()
     {
-        foreach (GameObject cube in cubes)
+        foreach (var cubeLightInfo in cubeLightInfos)
         {
-            float distance = Vector3.Distance(cube.transform.position, player.transform.position); // ­pºâ¨®¤l»PCUBEªº¶ZÂ÷
+            GameObject cube = cubeLightInfo.cube; // ç²å–CUBE
+            float distance = Vector3.Distance(cube.transform.position, player.transform.position); // è¨ˆç®—è»Šå­èˆ‡CUBEçš„è·é›¢
 
             if (distance <= triggerDistance && !hasTriggered[cube])
             {
-                hasTriggered[cube] = true; // ½T«O¥uÄ²µo¤@¦¸
-                StartCoroutine(DisplayColorSequence(cube)); // Åã¥Ü¸ÓCUBEªºÃC¦â§Ç¦C
+                hasTriggered[cube] = true; // ç¢ºä¿åªè§¸ç™¼ä¸€æ¬¡
+                StartCoroutine(DisplayColorSequence(cube)); // é¡¯ç¤ºè©²CUBEçš„é¡è‰²åºåˆ—
             }
 
-            if (isInputActive[cube]) // ·í¸ÓCUBE¥i¥H¶i¦æ¿é¤J®É¡AºÊÅ¥«öÁä¿é¤J
+            if (isInputActive[cube]) // ç•¶è©²CUBEå¯ä»¥é€²è¡Œè¼¸å…¥æ™‚ï¼Œç›£è½æŒ‰éµè¼¸å…¥
             {
                 if (Input.GetKeyDown(KeyCode.UpArrow))
                 {
@@ -63,50 +76,53 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     void GenerateColorSequenceForCube(GameObject cube)
     {
-        int sequenceLength = Random.Range(3, 6); // ÀH¾÷¥Í¦¨ 3 ¨ì 5 ªºÃC¦â§Ç¦Cªø«×
-        Color[] colorSequence = new Color[sequenceLength]; // ªì©l¤ÆÃC¦â§Ç¦C
+        int sequenceLength = Random.Range(3, 6); // éš¨æ©Ÿç”Ÿæˆ 3 åˆ° 5 çš„é¡è‰²åºåˆ—é•·åº¦
+        Color[] colorSequence = new Color[sequenceLength]; // åˆå§‹åŒ–é¡è‰²åºåˆ—
 
         for (int i = 0; i < sequenceLength; i++)
         {
-            colorSequence[i] = colors[Random.Range(0, colors.Length)]; // ÀH¾÷¿ï¾ÜÃC¦â
+            colorSequence[i] = colors[Random.Range(0, colors.Length)]; // éš¨æ©Ÿé¸æ“‡é¡è‰²
         }
 
-        cubeColorSequences[cube] = colorSequence; // ¬°¸ÓCUBEÀx¦sÃC¦â§Ç¦C
+        cubeColorSequences[cube] = colorSequence; // ç‚ºè©²CUBEå„²å­˜é¡è‰²åºåˆ—
     }
 
     IEnumerator DisplayColorSequence(GameObject cube)
     {
+        // ç²å–è©²ç‰©é«”çš„Renderer
+        Renderer cubeRenderer = cube.GetComponent<Renderer>();
+
+        // å…ˆé—œé–‰ç™¼å…‰æ•ˆæœ
+        cubeRenderer.material.SetColor("_EmissionColor", Color.black);
+        DynamicGI.SetEmissive(cubeRenderer, Color.black); // æ›´æ–°å…¨å±€å…‰ç…§ç³»çµ±
+
         for (int i = 0; i < cubeColorSequences[cube].Length; i++)
         {
             Color currentColor = cubeColorSequences[cube][i];
 
-            // ³]¸mµo¥úÃC¦â
-            Renderer cubeRenderer = cube.GetComponent<Renderer>();
-            cubeRenderer.material.SetColor("_EmissionColor", currentColor); // ³]¸mµo¥úÃC¦â
-            DynamicGI.SetEmissive(cubeRenderer, currentColor); // §ó·s¥ş§½¥ú·Ó¨t²Î
+            // è¨­ç½®ç™¼å…‰é¡è‰²
+            cubeRenderer.material.SetColor("_EmissionColor", currentColor); // è¨­ç½®ç™¼å…‰é¡è‰²
+            DynamicGI.SetEmissive(cubeRenderer, currentColor); // æ›´æ–°å…¨å±€å…‰ç…§ç³»çµ±
 
-            // °õ¦æÃC¦âº¥ÅÜ
+            // åŸ·è¡Œé¡è‰²æ¼¸è®Š
             yield return StartCoroutine(ColorFade(cube, currentColor, 0.3f));
 
-            yield return new WaitForSeconds(0.1f); // Åã¥ÜÃC¦â¦h¤Ö¬í
+            yield return new WaitForSeconds(0.1f); // é¡¯ç¤ºé¡è‰²å¤šå°‘ç§’
 
-            // ­«¸mÃC¦â¬°¥Õ¦â©Î¨ä¥L¹w³]ÃC¦â
-            yield return StartCoroutine(ColorFade(cube, Color.white, 0.3f)); // º¥ÅÜ¦^¥Õ¦â
+            // é‡ç½®é¡è‰²ç‚ºåŸå§‹é¡è‰²
+            yield return StartCoroutine(ColorFade(cube, Color.white, 0.3f)); // æ¼¸è®Šå›ç™½è‰²
 
-            // ­«¸mµo¥úÃC¦â
-            cubeRenderer.material.SetColor("_EmissionColor", Color.black); // ­«¸mµo¥úÃC¦â¬°¶Â¦â
-            DynamicGI.SetEmissive(cubeRenderer, Color.black); // §ó·s¥ş§½¥ú·Ó¨t²Î
+            // é‡ç½®ç™¼å…‰é¡è‰²
+            cubeRenderer.material.SetColor("_EmissionColor", Color.black); // é‡ç½®ç™¼å…‰é¡è‰²ç‚ºé»‘è‰²
+            DynamicGI.SetEmissive(cubeRenderer, Color.black); // æ›´æ–°å…¨å±€å…‰ç…§ç³»çµ±
 
-            yield return new WaitForSeconds(0.1f); // µ¥«İ¦h¤Ö¬í¦AÅã¥Ü¤U¤@­ÓÃC¦â
+            yield return new WaitForSeconds(0.1f); // ç­‰å¾…å¤šå°‘ç§’å†é¡¯ç¤ºä¸‹ä¸€å€‹é¡è‰²
         }
 
-        // Åã¥Ü§¹²¦«á¡A¶}©l±µ¨ü¿é¤J
+        // é¡¯ç¤ºå®Œç•¢å¾Œï¼Œé–‹å§‹æ¥å—è¼¸å…¥
         isInputActive[cube] = true;
         currentInputIndex[cube] = 0;
     }
-
-
-
 
     IEnumerator ColorFade(GameObject cube, Color targetColor, float duration)
     {
@@ -118,15 +134,13 @@ public class ColorSequenceGenerator : MonoBehaviour
         {
             cubeRenderer.material.color = Color.Lerp(initialColor, targetColor, elapsedTime / duration);
             elapsedTime += Time.deltaTime;
-            yield return null; // µ¥«İ¤U¤@´V
+            yield return null; // ç­‰å¾…ä¸‹ä¸€å¹€
         }
 
-        cubeRenderer.material.color = targetColor; // ½T«O³Ì²×ÃC¦â³]©w¬°¥Ø¼ĞÃC¦â
+        cubeRenderer.material.color = targetColor; // ç¢ºä¿æœ€çµ‚é¡è‰²è¨­å®šç‚ºç›®æ¨™é¡è‰²
     }
 
-
-
-
+    // åœ¨CheckInputæ–¹æ³•ä¸­ï¼Œç•¶é¡è‰²åºåˆ—å®Œæˆæ™‚ï¼Œé–‹å•Ÿç™¼å…‰ç‰©ä»¶çš„ç™¼å…‰æ•ˆæœ
     void CheckInput(GameObject cube, Color inputColor)
     {
         Color[] colorSequence = cubeColorSequences[cube];
@@ -140,21 +154,52 @@ public class ColorSequenceGenerator : MonoBehaviour
             {
                 Debug.Log("Cube " + cube.name + " sequence completed!");
 
-                // Àò¨ú¹ïÀ³ªº¿O¥ú¨Ã³]¸m¬°¥Õ¥ú«G«×50
-                Light cubeLight = cubeLights[System.Array.IndexOf(cubes, cube)];
-                cubeLight.color = Color.white; // ³]¸m¿O¥úÃC¦â¬°¥Õ¦â
-                cubeLight.intensity = 30f; // ³]¸m¿O¥ú«G«×¬°50
-                cubeLight.enabled = true; // ÂI«G¸ÓCUBEªº¿O¥ú
+                // ç²å–æ‰€æœ‰å°æ‡‰çš„ç‡ˆå…‰
+                CubeLightInfo cubeLightInfo = GetCubeLightInfo(cube); // ç²å–å°æ‡‰çš„CubeLightInfo
 
-                isInputActive[cube] = false; // °±¤î¿é¤J
+                // é–‹å•Ÿç‡ˆå…‰
+                foreach (Light cubeLight in cubeLightInfo.lights)
+                {
+                    if (!cubeLight.enabled) // åªåœ¨ç‡ˆå…‰é—œé–‰æ™‚å•Ÿç”¨
+                    {
+                        cubeLight.enabled = true; // é–‹å•Ÿç‡ˆå…‰
+                    }
+                }
+
+                // é–‹å•Ÿç™¼å…‰ç‰©ä»¶çš„ç™¼å…‰æ•ˆæœ
+                foreach (GameObject emissiveObject in cubeLightInfo.emissiveObjects)
+                {
+                    Renderer emissiveRenderer = emissiveObject.GetComponent<Renderer>();
+                    if (emissiveRenderer != null)
+                    {                                              
+                        // ç¢ºä¿å•Ÿç”¨ç™¼å…‰
+                        emissiveRenderer.GetComponent<MeshRenderer>().material.EnableKeyword("_EMISSION");
+                        DynamicGI.SetEmissive(emissiveRenderer, Color.white); // æ›´æ–°å…¨å±€å…‰ç…§ç³»çµ±
+
+                        Debug.Log("Enabled emission for: " + emissiveObject.name);
+                    }
+                }
+
+                // é‡ç½®ç•¶å‰ç´¢å¼•ä¸¦ç¦ç”¨è¼¸å…¥
+                currentInputIndex[cube] = 0;
+                isInputActive[cube] = false; // ç¦ç”¨è¼¸å…¥
             }
         }
         else
         {
-            Debug.Log("Incorrect color for Cube: " + cube.name + ". Try again.");
-            currentInputIndex[cube] = 0; // ­«¸m¿é¤J¯Á¤Ş
+            Debug.Log("Wrong color input for Cube: " + cube.name);
         }
     }
 
-
+    CubeLightInfo GetCubeLightInfo(GameObject cube)
+    {
+        foreach (var cubeLightInfo in cubeLightInfos)
+        {
+            if (cubeLightInfo.cube == cube)
+            {
+                return cubeLightInfo;
+            }
+        }
+        return null;
+    }
 }
