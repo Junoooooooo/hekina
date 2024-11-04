@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -23,8 +24,12 @@ public class PlayerController : MonoBehaviour
     private float targetLightIntensity = 0f;    // 目標燈光亮度
     private float lightIntensityDecayRate = 1f; // 燈光衰減速率
 
+    public float timeRemaining = 180f;    // 3分鐘 = 180秒
+    public TMP_Text timerText;                  // 連接 UI 的 Text 元件
+
     private void Start()
     {
+        UpdateTimer();  // 初始化顯示時間 
         UpdateEnergyBar(); // 初始化能量條
 
         // 設定燈光的初始亮度為0
@@ -41,6 +46,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        UpdateTimer();
         HandleInput();
         UpdateEnergy();
         UpdateLightIntensity(); // 更新燈光亮度
@@ -102,7 +108,31 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    private void UpdateTimer()
+    {
+        // 減少剩餘時間
+        timeRemaining -= Time.deltaTime;
 
+        // 檢查 TimerText 是否為 null
+        if (timerText != null)
+        {
+            // 檢查時間是否大於 0
+            if (timeRemaining > 0)
+            {
+                // 將剩餘時間轉換為分鐘和秒
+                int minutes = Mathf.FloorToInt(timeRemaining / 60F);
+                int seconds = Mathf.FloorToInt(timeRemaining % 60F);
+
+                // 設定格式為 "分鐘:秒" 的形式
+                timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+            }
+            else
+            {
+                // 如果時間已經結束，顯示 "Game Over"
+                timerText.text = "00:00";
+            }
+        }
+    }
     private void UpdateEnergyBar()
     {
         if (energyBar != null)
@@ -113,18 +143,20 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator SpawnCubes()
     {
+        Camera mainCamera = Camera.main; // 獲取主攝影機
+
         while (true) // 不斷生成立方體
         {
-            // 隨機選擇生成位置
-            Vector3 selectedCenter = centerPositions[Random.Range(0, centerPositions.Length)];
+            // 隨機生成一個位置在攝影機視口內
+            float randomX = Random.Range(0.1f, 0.9f); // 視口範圍內隨機 X
+            float randomY = Random.Range(0.1f, 0.9f); // 視口範圍內隨機 Y
+            Vector3 randomViewportPos = new Vector3(randomX, randomY, mainCamera.nearClipPlane + 70f); // Z代表距離攝影機的距離
 
-            // 設定生成位置
-            float randomX = Random.Range(selectedCenter.x - rangeX, selectedCenter.x + rangeX);
-            float randomY = Random.Range(selectedCenter.y - rangeY, selectedCenter.y + rangeY);
-            float randomZ = Random.Range(selectedCenter.z - rangeZ, selectedCenter.z + rangeZ);
+            // 使用 ViewportToWorldPoint 將視口座標轉換為世界座標
+            Vector3 spawnPosition = mainCamera.ViewportToWorldPoint(randomViewportPos);
 
             // 在隨機位置生成立方體
-            GameObject cube = Instantiate(cubePrefab, new Vector3(randomX, randomY, randomZ), Quaternion.identity);
+            GameObject cube = Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
 
             // 隨機生成存在時間
             float existenceTime = Random.Range(0.5f, 1f);
@@ -153,10 +185,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     private void RecoverEnergy()
     {
         energy += energyRecoveryAmount;
         energy = Mathf.Min(energy, 100f);
         UpdateEnergyBar(); // 更新能量條
     }
+
 }

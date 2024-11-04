@@ -76,7 +76,7 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     void GenerateColorSequenceForCube(GameObject cube)
     {
-        int sequenceLength = Random.Range(3, 6); // 隨機生成 3 到 5 的顏色序列長度
+        int sequenceLength = Random.Range(3, 5); // 隨機生成 3 到 5 的顏色序列長度
         Color[] colorSequence = new Color[sequenceLength]; // 初始化顏色序列
 
         for (int i = 0; i < sequenceLength; i++)
@@ -107,7 +107,7 @@ public class ColorSequenceGenerator : MonoBehaviour
             // 執行顏色漸變
             yield return StartCoroutine(ColorFade(cube, currentColor, 0.3f));
 
-            yield return new WaitForSeconds(0.1f); // 顯示顏色多少秒
+            yield return new WaitForSeconds(0.06f); // 顯示顏色多少秒
 
             // 重置顏色為原始顏色
             yield return StartCoroutine(ColorFade(cube, Color.white, 0.3f)); // 漸變回白色
@@ -116,7 +116,7 @@ public class ColorSequenceGenerator : MonoBehaviour
             cubeRenderer.material.SetColor("_EmissionColor", Color.black); // 重置發光顏色為黑色
             DynamicGI.SetEmissive(cubeRenderer, Color.black); // 更新全局光照系統
 
-            yield return new WaitForSeconds(0.1f); // 等待多少秒再顯示下一個顏色
+            yield return new WaitForSeconds(0.06f); // 等待多少秒再顯示下一個顏色
         }
 
         // 顯示完畢後，開始接受輸入
