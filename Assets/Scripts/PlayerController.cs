@@ -13,10 +13,6 @@ public class PlayerController : MonoBehaviour
     public GameObject cubePrefab;               // 立方體預製體
     public float minCubeSpawnInterval = 1f;    // 生成間隔的最小值
     public float maxCubeSpawnInterval = 3f;    // 生成間隔的最大值
-    public Vector3[] centerPositions;           // 立方體生成的中心位置陣列
-    public float rangeX = 5.0f;                 // X方向的隨機範圍
-    public float rangeY = 5.0f;                 // Y方向的隨機範圍
-    public float rangeZ = 5.0f;                 // Z方向的隨機範圍
     public Slider energyBar;                    // 能量量條的 UI 元件
 
     private bool isHoldingSpace = false;        // 是否按住空白鍵
