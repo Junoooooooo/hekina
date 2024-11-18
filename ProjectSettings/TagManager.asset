@@ -7,11 +7,12 @@ TagManager:
   - Obstacle
   - CUBE
   - DOOR
+  - aim
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - AIM
   - Water
   - UI
   - 
