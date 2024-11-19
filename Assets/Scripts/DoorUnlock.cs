@@ -9,9 +9,17 @@ public class DoorUnlock : MonoBehaviour
     private NodeController nodeController; // 引用 NodeController
     private string[][] sequences = new string[][] // 所有門的序列
     {
-        new string[] { "left", "right", "left", "right", "left" }, // 第一道門
-        new string[] { "right", "left", "right", "left", "right" }, // 第二道門
-        new string[] { "right", "right", "left", "left", "left" }   // 第三道門
+        new string[] {  "right", "right", "left", "left", "left"  }, // 第一道門
+        new string[] {  "right", "right", "left", "left", "left"  }, // 第二道門
+        new string[] { "right", "right", "left", "left", "left" },  // 第三道門
+        new string[] { "right", "right", "left", "left", "left" },// 第四道門
+        new string[] { "right", "right", "left", "left", "left" },// 第五道門
+        new string[] { "right", "right", "left", "left", "left" },// 第六道門
+        new string[] { "right", "right", "left", "left", "left" },// 第七道門
+        new string[] { "right", "right", "left", "left", "left" },// 第八道門
+        new string[] { "right", "right", "left", "left", "left" },// 第九道門
+        new string[] { "right", "right", "left", "left", "left" },// 第十道門
+        new string[] { "right", "right", "left", "left", "left" },// 第十一道門
     };
 
     private Queue<string> inputQueue = new Queue<string>(); // 用於存儲玩家輸入的按鍵序列

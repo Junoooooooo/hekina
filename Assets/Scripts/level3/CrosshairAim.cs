@@ -28,6 +28,7 @@ public class CrosshairAim : MonoBehaviour
     private Vector3 jumpTargetPosition; // 跳跃的目标位置
     private Vector3 originalPosition; // 记录相机的初始位置
     private Quaternion originalRotation; // 记录相机的初始旋转
+    private Quaternion targetRotation; // 記錄跳躍時相機應保持的旋轉
 
     void Start()
     {
@@ -135,43 +136,47 @@ public class CrosshairAim : MonoBehaviour
         if (!isJumping)
         {
             isJumping = true;
-            jumpStartTime = Time.time; // 记录跳跃开始的时间
+            jumpStartTime = Time.time; // 記錄跳躍開始的時間
 
-            // 设置跳跃目标位置为当前对准目标的位置 + 高度偏移
+            // 保存當前相機的旋轉作為跳躍期間的目標旋轉
+            targetRotation = playerCamera.transform.rotation;
+
+            // 設置跳躍目標位置為當前對準目標的位置 + 高度偏移
             if (currentTarget != null)
             {
-                jumpTargetPosition = currentTarget.transform.position + Vector3.up * 5f;  // 增加 5 的高度
+                jumpTargetPosition = currentTarget.transform.position + Vector3.up * 30f;  // 增加 5 的高度
             }
         }
     }
 
+
     // 执行跳跃逻辑
     void PerformJump()
     {
-        float t = (Time.time - jumpStartTime) / jumpDuration; // 计算跳跃的时间进度
+        float t = (Time.time - jumpStartTime) / jumpDuration; // 計算跳躍的時間進度
 
         if (t < 1f)
         {
-            // 使用Lerp平滑过渡相机的位置，并增加高度使其模拟跳跃的感觉
-            float height = Mathf.Sin(t * Mathf.PI) * jumpHeight; // 使用正弦函数模拟跳跃
+            // 使用Lerp平滑過渡相機的位置，並增加高度使其模擬跳躍的感覺
+            float height = Mathf.Sin(t * Mathf.PI) * jumpHeight; // 使用正弦函數模擬跳躍
             Vector3 targetPosition = Vector3.Lerp(originalPosition, jumpTargetPosition, t);
-            targetPosition.y += height; // 给相机一个上升的高度
+            targetPosition.y += height; // 給相機一個上升的高度
 
-            // 更新相机位置
+            // 更新相機位置
             playerCamera.transform.position = targetPosition;
 
-            // 保持相机的初始旋转
-            playerCamera.transform.rotation = originalRotation;
+            // 保持相機跳躍開始時的旋轉
+            playerCamera.transform.rotation = targetRotation;
         }
         else
         {
-            // 跳跃完成，相机停在目标位置
+            // 跳躍完成，相機停在目標位置
             playerCamera.transform.position = jumpTargetPosition;
-            playerCamera.transform.rotation = originalRotation; // 确保旋转不变
+            playerCamera.transform.rotation = targetRotation; // 確保旋轉不變
 
-            // 记录跳跃后的位置并准备跳跃到下一个目标
+            // 記錄跳躍後的位置並準備跳躍到下一個目標
             originalPosition = jumpTargetPosition;
-            isJumping = false; // 跳跃结束
+            isJumping = false; // 跳躍結束
         }
     }
 }

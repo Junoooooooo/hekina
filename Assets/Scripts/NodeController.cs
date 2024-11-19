@@ -12,11 +12,25 @@ public class NodeController : MonoBehaviour
     // 用來儲存目前碰到的門
     private GameObject currentDoor;
 
+    // 固定的 X 軸旋轉角度
+    private const float fixedRotationX = -3.8f;
+
+    // 旋轉速度
+    public float rotationSpeed = 2f;
+
     void Update()
     {
         if (isMoving)
         {
             MoveTowardsCurrentNode();
+        }
+        else
+        {
+            // 如果停止移動並且碰到門，讓相機面向門
+            if (currentDoor != null)
+            {
+                FaceDoor();
+            }
         }
     }
 
@@ -27,7 +41,9 @@ public class NodeController : MonoBehaviour
             // 移動到當前節點
             Transform targetNode = nodes[currentNodeIndex];
             transform.position = Vector3.MoveTowards(transform.position, targetNode.position, moveSpeed * Time.deltaTime);
-            transform.LookAt(targetNode); // 使角色面向節點
+
+            // 平滑轉向目標節點
+            SmoothLookAt(targetNode.position);
 
             // 檢查是否到達當前節點
             if (Vector3.Distance(transform.position, targetNode.position) < arrivalThreshold)
@@ -46,6 +62,30 @@ public class NodeController : MonoBehaviour
             isMoving = false; // 停止移動
             currentDoor = other.gameObject; // 儲存目前碰到的門
         }
+    }
+
+    private void FaceDoor()
+    {
+        if (currentDoor != null)
+        {
+            // 平滑轉向門的位置
+            SmoothLookAt(currentDoor.transform.position);
+        }
+    }
+
+    private void SmoothLookAt(Vector3 targetPosition)
+    {
+        // 計算目標的方向
+        Vector3 directionToTarget = targetPosition - transform.position;
+        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+
+        // 固定 X 軸的旋轉角度
+        Vector3 targetEulerAngles = targetRotation.eulerAngles;
+        targetEulerAngles.x = fixedRotationX;
+        targetRotation = Quaternion.Euler(targetEulerAngles);
+
+        // 使用 Slerp 平滑旋轉到目標方向
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
     public void UnlockCurrentDoor()
