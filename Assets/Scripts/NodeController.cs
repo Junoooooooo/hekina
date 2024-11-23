@@ -68,10 +68,47 @@ public class NodeController : MonoBehaviour
     {
         if (currentDoor != null)
         {
-            // 平滑轉向門的位置
-            SmoothLookAt(currentDoor.transform.position);
+            // 計算從相機到門的方向向量（忽略 Y 軸差異）
+            Vector3 directionToDoor = currentDoor.transform.position - transform.position;
+            directionToDoor.y = 0; // 忽略 Y 軸，僅計算水平旋轉
+
+            // 計算目標的 Y 軸旋轉角度
+            Quaternion targetRotation = Quaternion.LookRotation(directionToDoor);
+
+            // 固定 X 軸的旋轉角度
+            Vector3 targetEulerAngles = targetRotation.eulerAngles;
+            targetEulerAngles.x = fixedRotationX; // 固定 X 軸角度
+            targetEulerAngles.z = 0; // 固定 Z 軸角度
+
+            // 計算當前相機的 Y 軸角度和目標的 Y 軸角度之間的差異
+            float currentYAngle = transform.eulerAngles.y;
+            float targetYAngle = targetEulerAngles.y;
+            float angleDifference = Mathf.Abs(Mathf.DeltaAngle(currentYAngle, targetYAngle));
+
+            // 如果角度差異大於 5 度，進行旋轉
+            if (angleDifference > 5f)
+            {
+                // 設置新的 Y 軸目標旋轉角度（轉 90 度）
+                float newYAngle = Mathf.MoveTowardsAngle(currentYAngle, targetYAngle, 90f);
+                targetEulerAngles.y = newYAngle;
+
+                // 使用目標的 Euler 角度來設置平滑旋轉
+                targetRotation = Quaternion.Euler(targetEulerAngles);
+
+                // 使用 Slerp 平滑旋轉到目標 Y 軸方向
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            }
+            else
+            {
+                // 已經對準，不再旋轉
+                Debug.Log("Camera is already facing the door or within acceptable angle.");
+            }
         }
     }
+
+
+
+
 
     private void SmoothLookAt(Vector3 targetPosition)
     {
