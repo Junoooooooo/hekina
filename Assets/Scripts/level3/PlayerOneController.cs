@@ -4,21 +4,17 @@ using System.Collections.Generic;
 public class PlayerOneController : MonoBehaviour
 {
     private int currentIndex = 0; // 當前密碼索引
-    private string[][] sequences = new string[][] // 所有密碼序列
-    {
-        new string[] { "up", "down", "up", "down", "up" }, // 第一組密碼
-        new string[] { "down", "up", "down", "up", "down" }, // 第二組密碼
-        new string[] { "up", "down", "up", "up", "up" }   // 第三組密碼
-    };
+    private int currentCircle = 0; // 當前圈數
+    private string[] sequence = new string[] { "right", "left", "right", "left" }; // 每一圈的輸入序列
 
     private Queue<string> inputQueue = new Queue<string>(); // 用於存儲玩家輸入的按鍵序列
 
-    // 每組密碼對應的燈光和物件
+    // 每圈對應的燈光和物件
     public Light[] sequenceLights1;
     public Light[] sequenceLights2;
     public Light[] sequenceLights3;
 
-    // 每組密碼對應的 GameObject，這些 GameObject 的材質會改變 Emissive 效果
+    // 每圈對應的 GameObject，這些 GameObject 的材質會改變 Emissive 效果
     public GameObject[] sequenceObjects1;
     public GameObject[] sequenceObjects2;
     public GameObject[] sequenceObjects3;
@@ -65,13 +61,13 @@ public class PlayerOneController : MonoBehaviour
 
     private void CheckInput()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            HandleInput("up");
+            HandleInput("left");
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            HandleInput("down");
+            HandleInput("right");
         }
     }
 
@@ -79,8 +75,8 @@ public class PlayerOneController : MonoBehaviour
     {
         inputQueue.Enqueue(input); // 將玩家輸入添加到隊列中
 
-        // 檢查當前輸入是否正確
-        if (inputQueue.Count == sequences[currentIndex].Length)
+        // 每完成一圈（左右鍵一次）就檢查是否正確
+        if (inputQueue.Count == sequence.Length)
         {
             if (CheckSequence())
             {
@@ -96,7 +92,7 @@ public class PlayerOneController : MonoBehaviour
     private bool CheckSequence()
     {
         // 檢查輸入的順序是否正確
-        string[] correctSequence = sequences[currentIndex];
+        string[] correctSequence = sequence;
         for (int i = 0; i < correctSequence.Length; i++)
         {
             if (inputQueue.Dequeue() != correctSequence[i])
@@ -111,8 +107,8 @@ public class PlayerOneController : MonoBehaviour
     {
         Debug.Log("Correct sequence entered!");
 
-        // 根據密碼開啟燈光和改變物件的 Emissive 效果
-        switch (currentIndex)
+        // 根據圈數開啟燈光和改變物件的 Emissive 效果
+        switch (currentCircle)
         {
             case 0:
                 EnableLights(sequenceLights1);
@@ -133,11 +129,11 @@ public class PlayerOneController : MonoBehaviour
                 break;
         }
 
-        // 進入下一組密碼
-        currentIndex++;
-        inputQueue.Clear(); // 清空隊列以便下一組密碼使用
+        // 進入下一圈
+        currentCircle++;
+        inputQueue.Clear(); // 清空隊列以便下一圈使用
 
-        if (currentIndex >= sequences.Length)
+        if (currentCircle >= 3) // 假設最多有3圈
         {
             Debug.Log("All sequences completed!");
         }

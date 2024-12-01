@@ -77,9 +77,28 @@ public class CrosshairAim : MonoBehaviour
 
     void MoveCamera()
     {
-        // 移动相机逻辑
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        // 使用WASD控制相机移动，只允许WASD控制，禁止方向键控制
+        float horizontal = 0f;
+        float vertical = 0f;
+
+        // 获取WASD键的输入
+        if (Input.GetKey(KeyCode.W)) // W 键向前
+        {
+            vertical = 1f;
+        }
+        else if (Input.GetKey(KeyCode.S)) // S 键向后
+        {
+            vertical = -1f;
+        }
+
+        if (Input.GetKey(KeyCode.A)) // A 键向左
+        {
+            horizontal = -1f;
+        }
+        else if (Input.GetKey(KeyCode.D)) // D 键向右
+        {
+            horizontal = 1f;
+        }
 
         Vector3 moveDirection = new Vector3(horizontal, 0, vertical).normalized;
 
@@ -92,6 +111,7 @@ public class CrosshairAim : MonoBehaviour
             pitch = Mathf.Clamp(pitch, -90f, 90f);
         }
     }
+
 
     void RotateCamera()
     {

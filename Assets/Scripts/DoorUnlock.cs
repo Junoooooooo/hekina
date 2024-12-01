@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class DoorUnlock : MonoBehaviour
 {
@@ -9,20 +10,15 @@ public class DoorUnlock : MonoBehaviour
     private NodeController nodeController; // 引用 NodeController
     private string[][] sequences = new string[][] // 所有門的序列
     {
-        new string[] {  "right", "right", "left", "left", "left"  }, // 第一道門
-        new string[] {  "right", "right", "left", "left", "left"  }, // 第二道門
-        new string[] { "right", "right", "left", "left", "left" },  // 第三道門
-        new string[] { "right", "right", "left", "left", "left" },// 第四道門
-        new string[] { "right", "right", "left", "left", "left" },// 第五道門
-        new string[] { "right", "right", "left", "left", "left" },// 第六道門
-        new string[] { "right", "right", "left", "left", "left" },// 第七道門
-        new string[] { "right", "right", "left", "left", "left" },// 第八道門
-        new string[] { "right", "right", "left", "left", "left" },// 第九道門
-        new string[] { "right", "right", "left", "left", "left" },// 第十道門
-        new string[] { "right", "right", "left", "left", "left" },// 第十一道門
+        new string[] { "right", "right", "left", "left", "left" }, // 第一道門
+        new string[] { "right", "right", "left", "left", "left" }, // 第二道門
+        new string[] { "right", "right", "left", "left", "left" }, // 第三道門
+        new string[] { "right", "right", "left", "left", "left" }, // 第四道門
+        // 其餘門序列...
     };
 
     private Queue<string> inputQueue = new Queue<string>(); // 用於存儲玩家輸入的按鍵序列
+    private bool canAcceptInput = true; // 用於控制是否接受輸入
 
     void Start()
     {
@@ -37,14 +33,25 @@ public class DoorUnlock : MonoBehaviour
 
     private void CheckInput()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (canAcceptInput)
         {
-            HandleInput("left");
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                StartCoroutine(HandleInputWithDelay("left"));
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                StartCoroutine(HandleInputWithDelay("right"));
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            HandleInput("right");
-        }
+    }
+
+    private IEnumerator HandleInputWithDelay(string input)
+    {
+        canAcceptInput = false; // 暫時禁用輸入
+        HandleInput(input);
+        yield return new WaitForSeconds(0.2f); // 等待 0.1 秒
+        canAcceptInput = true; // 恢復輸入
     }
 
     private void HandleInput(string input)
