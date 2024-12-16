@@ -79,6 +79,11 @@ public class CarMovement : MonoBehaviour
             Debug.Log("Crashed into an obstacle! Restarting level...");
             RestartCurrentLevel(); // 重启场景
         }
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("goal")) // 碰撞到 goal 层
+        {
+            Debug.Log("Goal reached! Loading Level 2...");
+            LoadLevel2(); // 加载 Level 2
+        }
     }
 
     // 重新加载当前场景
@@ -89,5 +94,9 @@ public class CarMovement : MonoBehaviour
 
         // 重新加载当前场景
         SceneManager.LoadScene(currentSceneName);
+    }
+    void LoadLevel2()
+    {
+        SceneManager.LoadScene("level2"); // 替换成你实际的 Level2 场景名称
     }
 }

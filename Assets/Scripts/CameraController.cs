@@ -1,21 +1,22 @@
-using UnityEngine;
+ï»¿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraController : MonoBehaviour
 {
-    public float moveSpeed = 10f; // ²¾°Ê³t«×
-    public float rotationSpeed = 2f; // ±ÛÂàªº¥­·Æ³t«×
-    public float rotationStep = 10f; // ¨C¦¸±ÛÂàªº¨¤«×
-    private Quaternion targetRotation; // ¥Ø¼Ğ±ÛÂà
+    public float moveSpeed = 10f; // ç§»å‹•é€Ÿåº¦
+    public float rotationSpeed = 2f; // æ—‹è½‰çš„å¹³æ»‘é€Ÿåº¦
+    public float rotationStep = 10f; // æ¯æ¬¡æ—‹è½‰çš„è§’åº¦
+    private Quaternion targetRotation; // ç›®æ¨™æ—‹è½‰
 
     void Start()
     {
-        // ªì©l¤Æ¥Ø¼Ğ±ÛÂà¬°·í«eÄá¼v¾÷ªº±ÛÂà
+        // åˆå§‹åŒ–ç›®æ¨™æ—‹è½‰ç‚ºç•¶å‰æ”å½±æ©Ÿçš„æ—‹è½‰
         targetRotation = transform.rotation;
     }
 
     void Update()
     {
-        // ¥u¥Î W ©M S ±±¨î«e«á²¾°Ê
+        // åªç”¨ W å’Œ S æ§åˆ¶å‰å¾Œç§»å‹•
         if (Input.GetKey(KeyCode.W))
         {
             Vector3 forwardMovement = transform.forward;
@@ -27,19 +28,35 @@ public class CameraController : MonoBehaviour
             transform.position += backwardMovement * moveSpeed * Time.deltaTime;
         }
 
-        // A ©M D ±±¨î±ÛÂà
+        // A å’Œ D æ§åˆ¶æ—‹è½‰
         if (Input.GetKey(KeyCode.A))
         {
-            // ¨C¦¸±ÛÂà°ò©ó·í«e¥Ø¼Ğ±ÛÂà¡A¦V¥ªÂà
+            // æ¯æ¬¡æ—‹è½‰åŸºæ–¼ç•¶å‰ç›®æ¨™æ—‹è½‰ï¼Œå‘å·¦è½‰
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 15f, 0);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            // ¨C¦¸±ÛÂà°ò©ó·í«e¥Ø¼Ğ±ÛÂà¡A¦V¥kÂà
+            // æ¯æ¬¡æ—‹è½‰åŸºæ–¼ç•¶å‰ç›®æ¨™æ—‹è½‰ï¼Œå‘å³è½‰
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 15f, 0);
         }
 
-        // ¥­·Æ´¡­È¨ì¥Ø¼Ğ±ÛÂà
+        // å¹³æ»‘æ’å€¼åˆ°ç›®æ¨™æ—‹è½‰
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
     }
+    void OnCollisionEnter(Collision collision)
+    {
+        // å¦‚æœç¢°åˆ° goal å±‚
+        if (collision.gameObject.layer == LayerMask.NameToLayer("goal"))
+        {
+            Debug.Log("Goal reached! Loading Level 3...");
+            LoadLevel3(); // åŠ è½½ Level 3
+        }
+    }
+
+    // åŠ è½½ Level3
+    void LoadLevel3()
+    {
+        SceneManager.LoadScene("level3"); // æ›¿æ¢ä¸ºå®é™…çš„ Level3 åœºæ™¯åç§°
+    }
+
 }

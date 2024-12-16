@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement; // 引入場景管理
 
 public class shadow : MonoBehaviour
 {
@@ -23,9 +24,27 @@ public class shadow : MonoBehaviour
             {
                 isChasing = false;
                 // 影子達到終點後可以執行的操作，例如結束遊戲
-                // GameOver();
+                Debug.Log("Shadow reached the end point!");
             }
         }
+    }
+
+    // 當影子碰到玩家時
+    private void OnTriggerEnter(Collider other)
+    {
+        // 檢查碰到的物件是否有 "Player" 標籤
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("Shadow touched the Player! Restarting the game...");
+            RestartGame();
+        }
+    }
+
+    // 遊戲重啟邏輯
+    private void RestartGame()
+    {
+        // 重新加載當前場景
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     // 可選：停止或重啟追趕

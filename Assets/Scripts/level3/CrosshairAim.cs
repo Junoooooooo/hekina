@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement; // 用於重新載入場景或退出遊戲
 using UnityEngine.UI;
 
 public class CrosshairAim : MonoBehaviour
@@ -9,66 +10,54 @@ public class CrosshairAim : MonoBehaviour
     public Color targetUnavailableColor = Color.white;
     public float maxAimDistance = 30f;
     public LayerMask grappleableLayer;
+    public LayerMask goalLayer; // 新增的目標層
     public float moveSpeed = 5f;
     public float rotationSpeed = 100f;
 
     private float yaw = 0f;
     private float pitch = 0f;
 
-    // 新增的变量
-    public FloatingTargetsManager targetsManager;  // 引用 FloatingTargetsManager
+    public FloatingTargetsManager targetsManager; // 引用 FloatingTargetsManager
+    private GameObject currentTarget = null;
 
-    private GameObject currentTarget = null;  // 记录当前准星对准的目标
-
-    // 跳跃相关变量
-    public float jumpHeight = 5f;   // 跳跃的最大高度
-    public float jumpDuration = 1f; // 跳跃的持续时间
-    private bool isJumping = false; // 判断是否正在跳跃
-    private float jumpStartTime = 0f; // 跳跃开始的时间
-    private Vector3 jumpTargetPosition; // 跳跃的目标位置
-    private Vector3 originalPosition; // 记录相机的初始位置
-    private Quaternion originalRotation; // 记录相机的初始旋转
-    private Quaternion targetRotation; // 記錄跳躍時相機應保持的旋轉
+    public float jumpHeight = 5f;
+    public float jumpDuration = 1f;
+    private bool isJumping = false;
+    private float jumpStartTime = 0f;
+    private Vector3 jumpTargetPosition;
+    private Vector3 originalPosition;
+    private Quaternion originalRotation;
+    private Quaternion targetRotation;
 
     void Start()
     {
-        // 初始化准星颜色
         if (crosshairUI != null)
         {
             crosshairUI.color = targetUnavailableColor;
         }
 
-        // 记录初始相机位置
         originalPosition = playerCamera.transform.position;
         originalRotation = playerCamera.transform.rotation;
     }
 
     void Update()
     {
-        // 呼叫检测准星是否对准目标的功能
         CheckAim();
-
-        // 移动和旋转相机
         MoveCamera();
         RotateCamera();
-
-        // 更新准星位置
         UpdateCrosshairPosition();
 
-        // 按下 "F" 键，并且准星对准有效目标时，触发跳跃效果
         if (Input.GetKeyDown(KeyCode.F) && currentTarget != null)
         {
-            Debug.Log("successful");  // 在控制台显示 "successful"
+            Debug.Log("successful");
             if (targetsManager != null)
             {
-                targetsManager.StopTargetMovement(currentTarget);  // 停止对应目标的浮动
+                targetsManager.StopTargetMovement(currentTarget);
             }
 
-            // 触发跳跃到目标位置
             StartJumpToTarget();
         }
 
-        // 如果正在跳跃，执行跳跃逻辑
         if (isJumping)
         {
             PerformJump();
@@ -77,25 +66,23 @@ public class CrosshairAim : MonoBehaviour
 
     void MoveCamera()
     {
-        // 使用WASD控制相机移动，只允许WASD控制，禁止方向键控制
         float horizontal = 0f;
         float vertical = 0f;
 
-        // 获取WASD键的输入
-        if (Input.GetKey(KeyCode.W)) // W 键向前
+        if (Input.GetKey(KeyCode.W))
         {
             vertical = 1f;
         }
-        else if (Input.GetKey(KeyCode.S)) // S 键向后
+        else if (Input.GetKey(KeyCode.S))
         {
             vertical = -1f;
         }
 
-        if (Input.GetKey(KeyCode.A)) // A 键向左
+        if (Input.GetKey(KeyCode.A))
         {
             horizontal = -1f;
         }
-        else if (Input.GetKey(KeyCode.D)) // D 键向右
+        else if (Input.GetKey(KeyCode.D))
         {
             horizontal = 1f;
         }
@@ -107,15 +94,12 @@ public class CrosshairAim : MonoBehaviour
             float moveAmount = moveSpeed * Time.deltaTime;
             yaw += moveDirection.x * rotationSpeed * Time.deltaTime;
             pitch -= moveDirection.z * rotationSpeed * Time.deltaTime;
-
             pitch = Mathf.Clamp(pitch, -90f, 90f);
         }
     }
 
-
     void RotateCamera()
     {
-        // 旋转相机逻辑
         playerCamera.transform.localRotation = Quaternion.Euler(pitch, yaw, 0);
     }
 
@@ -126,18 +110,18 @@ public class CrosshairAim : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, maxAimDistance, grappleableLayer))
         {
-            currentTarget = hit.collider.gameObject;  // 记录当前对准的目标
+            currentTarget = hit.collider.gameObject;
             if (crosshairUI != null)
             {
-                crosshairUI.color = targetAvailableColor;  // 改为绿色
+                crosshairUI.color = targetAvailableColor;
             }
         }
         else
         {
-            currentTarget = null;  // 没有对准目标时，清除
+            currentTarget = null;
             if (crosshairUI != null)
             {
-                crosshairUI.color = targetUnavailableColor;  // 恢复为白色
+                crosshairUI.color = targetUnavailableColor;
             }
         }
     }
@@ -150,53 +134,62 @@ public class CrosshairAim : MonoBehaviour
         }
     }
 
-    // 开始跳跃到目标位置
     void StartJumpToTarget()
     {
         if (!isJumping)
         {
             isJumping = true;
-            jumpStartTime = Time.time; // 記錄跳躍開始的時間
-
-            // 保存當前相機的旋轉作為跳躍期間的目標旋轉
+            jumpStartTime = Time.time;
             targetRotation = playerCamera.transform.rotation;
 
-            // 設置跳躍目標位置為當前對準目標的位置 + 高度偏移
             if (currentTarget != null)
             {
-                jumpTargetPosition = currentTarget.transform.position + Vector3.up * 30f;  // 增加 5 的高度
+                jumpTargetPosition = currentTarget.transform.position + Vector3.up * 5f;
             }
         }
     }
 
-
-    // 执行跳跃逻辑
     void PerformJump()
     {
-        float t = (Time.time - jumpStartTime) / jumpDuration; // 計算跳躍的時間進度
+        float t = (Time.time - jumpStartTime) / jumpDuration;
 
         if (t < 1f)
         {
-            // 使用Lerp平滑過渡相機的位置，並增加高度使其模擬跳躍的感覺
-            float height = Mathf.Sin(t * Mathf.PI) * jumpHeight; // 使用正弦函數模擬跳躍
+            float height = Mathf.Sin(t * Mathf.PI) * jumpHeight;
             Vector3 targetPosition = Vector3.Lerp(originalPosition, jumpTargetPosition, t);
-            targetPosition.y += height; // 給相機一個上升的高度
-
-            // 更新相機位置
+            targetPosition.y += height;
             playerCamera.transform.position = targetPosition;
-
-            // 保持相機跳躍開始時的旋轉
             playerCamera.transform.rotation = targetRotation;
         }
         else
         {
-            // 跳躍完成，相機停在目標位置
             playerCamera.transform.position = jumpTargetPosition;
-            playerCamera.transform.rotation = targetRotation; // 確保旋轉不變
-
-            // 記錄跳躍後的位置並準備跳躍到下一個目標
+            playerCamera.transform.rotation = targetRotation;
             originalPosition = jumpTargetPosition;
-            isJumping = false; // 跳躍結束
+            isJumping = false;
         }
+    }
+
+    // 檢測碰撞
+    private void OnTriggerEnter(Collider other)
+    {
+        if (goalLayer == (goalLayer | (1 << other.gameObject.layer))) // 檢查目標是否屬於目標層
+        {
+            Debug.Log("Goal reached!");
+            EndGame(); // 遊戲結束處理
+        }
+    }
+
+    void EndGame()
+    {
+        // 可執行的遊戲結束邏輯
+        Debug.Log("Game Over!");
+
+        // 例如重新載入場景
+        // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        // 或退出遊戲
+        // Application.Quit();
+        SceneManager.LoadScene("Level1");
     }
 }
