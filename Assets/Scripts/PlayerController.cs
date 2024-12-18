@@ -144,9 +144,9 @@ public class PlayerController : MonoBehaviour
         while (true) // 不斷生成立方體
         {
             // 隨機生成一個位置在攝影機視口內
-            float randomX = Random.Range(0.1f, 0.9f); // 視口範圍內隨機 X
-            float randomY = Random.Range(0.1f, 0.9f); // 視口範圍內隨機 Y
-            Vector3 randomViewportPos = new Vector3(randomX, randomY, mainCamera.nearClipPlane + 70f); // Z代表距離攝影機的距離
+            float randomX = Random.Range(0.2f, 0.8f); // 視口範圍內隨機 X
+            float randomY = Random.Range(0.2f, 0.8f); // 視口範圍內隨機 Y
+            Vector3 randomViewportPos = new Vector3(randomX, randomY, mainCamera.nearClipPlane + 45f); // Z代表距離攝影機的距離
 
             // 使用 ViewportToWorldPoint 將視口座標轉換為世界座標
             Vector3 spawnPosition = mainCamera.ViewportToWorldPoint(randomViewportPos);
@@ -155,13 +155,13 @@ public class PlayerController : MonoBehaviour
             GameObject cube = Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
 
             // 隨機生成存在時間
-            float existenceTime = Random.Range(0.5f, 1f);
+            float existenceTime = Random.Range(1f, 3f);
             float elapsedTime = 0f; // 記錄經過的時間
 
             // 在存在時間內檢查玩家是否按下 Enter 鍵
             while (elapsedTime < existenceTime)
             {
-                if (Input.GetKeyDown(KeyCode.Return))
+                if (Input.GetMouseButtonDown(0))
                 {
                     RecoverEnergy(); // 玩家成功獲取能量
                     Destroy(cube); // 刪除立方體

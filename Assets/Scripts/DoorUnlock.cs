@@ -11,9 +11,15 @@ public class DoorUnlock : MonoBehaviour
     private string[][] sequences = new string[][] // 所有門的序列
     {
         new string[] { "right", "right", "left", "left", "left" }, // 第一道門
-        new string[] { "right", "right", "left", "left", "left" }, // 第二道門
-        new string[] { "right", "right", "left", "left", "left" }, // 第三道門
-        new string[] { "right", "right", "left", "left", "left" }, // 第四道門
+        new string[] { "right", "left", "right", "left", "right" }, // 第二道門
+        new string[] { "left", "right", "right", "left", "right" }, // 第三道門
+        new string[] { "left", "right", "left", "right", "left" }, // 第四道門
+        new string[] { "right", "left", "left", "right", "right" }, // 第五道門
+        new string[] { "left", "right", "left", "right", "right" }, // 第六道門
+        new string[] { "right", "right", "left", "left", "left" }, // 第七道門
+        new string[] { "left", "right", "right", "left", "left" }, // 第八道門
+        new string[] { "right", "right", "right", "left", "right"}, // 第九道門
+        new string[] { "left", "right", "left", "right", "left" }, // 第十道門
         // 其餘門序列...
     };
 
@@ -22,7 +28,7 @@ public class DoorUnlock : MonoBehaviour
 
     void Start()
     {
-        nodeController = FindObjectOfType<NodeController>();
+      //  nodeController = FindObjectOfType<NodeController>();
         StartUnlocking();
     }
 
@@ -56,21 +62,27 @@ public class DoorUnlock : MonoBehaviour
 
     private void HandleInput(string input)
     {
-        inputQueue.Enqueue(input); // 將玩家輸入添加到隊列中
+        // 獲取當前正確序列
+        string[] correctSequence = sequences[currentDoorIndex];
 
-        // 檢查當前輸入是否正確
-        if (inputQueue.Count == sequences[currentDoorIndex].Length)
+        // 添加玩家輸入到佇列中
+        inputQueue.Enqueue(input);
+
+        // 當輸入佇列達到序列長度時進行檢查
+        if (inputQueue.Count == correctSequence.Length)
         {
             if (CheckSequence())
             {
-                UnlockDoor(); // 如果正確，解鎖
+                UnlockDoor(); // 如果正確，解鎖門
             }
             else
             {
-                inputQueue.Clear(); // 如果錯誤，清空隊列
+                Debug.Log("Incorrect sequence! Please try again.");
+                inputQueue.Clear(); // 清空佇列，允許重新輸入
             }
         }
     }
+
 
     private bool CheckSequence()
     {
@@ -109,10 +121,10 @@ public class DoorUnlock : MonoBehaviour
         }
 
         // 通知 NodeController 繼續移動
-        if (nodeController != null)
+        /*if (nodeController != null)
         {
             nodeController.UnlockCurrentDoor();
-        }
+        }*/
     }
 
     public void StartUnlocking()
