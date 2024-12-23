@@ -8,11 +8,15 @@ public class CrosshairAim : MonoBehaviour
     public Image crosshairUI;
     public Color targetAvailableColor = Color.green;
     public Color targetUnavailableColor = Color.white;
+    public Color dangerColor = Color.red; // 當影子靠近時的顏色
     public float maxAimDistance = 30f;
     public LayerMask grappleableLayer;
     public LayerMask goalLayer; // 新增的目標層
     public float moveSpeed = 5f;
     public float rotationSpeed = 100f;
+
+    public Transform shadow; // 拖入影子物件
+    public float dangerDistance = 5f; // 當影子小於這個距離時，準星變紅
 
     private float yaw = 0f;
     private float pitch = 0f;
@@ -46,6 +50,26 @@ public class CrosshairAim : MonoBehaviour
         MoveCamera();
         RotateCamera();
         UpdateCrosshairPosition();
+
+        // 距離檢測
+        if (shadow != null)
+        {
+            float distanceToShadow = Vector3.Distance(playerCamera.transform.position, shadow.position);
+            if (distanceToShadow <= dangerDistance)
+            {
+                if (crosshairUI != null)
+                {
+                    crosshairUI.color = dangerColor; // 距離內，變紅
+                }
+            }
+            else
+            {
+                if (crosshairUI != null)
+                {
+                    crosshairUI.color = targetUnavailableColor; // 距離外，恢復預設色
+                }
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.F) && currentTarget != null)
         {
@@ -186,10 +210,9 @@ public class CrosshairAim : MonoBehaviour
         Debug.Log("Game Over!");
 
         // 例如重新載入場景
-        // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
         // 或退出遊戲
         // Application.Quit();
-        SceneManager.LoadScene("Level1");
     }
 }

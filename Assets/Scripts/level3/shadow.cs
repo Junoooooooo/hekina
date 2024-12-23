@@ -1,38 +1,38 @@
-using UnityEngine;
-using UnityEngine.SceneManagement; // ¤Ş¤J³õ´ººŞ²z
+ï»¿using UnityEngine;
+using UnityEngine.SceneManagement; // å¼•å…¥å ´æ™¯ç®¡ç†
 
 public class shadow : MonoBehaviour
 {
-    // ¥i½Õ¾ãªº¼v¤l°l»°³t«×
+    // å¯èª¿æ•´çš„å½±å­è¿½è¶•é€Ÿåº¦
     public float chaseSpeed = 2f;
 
-    // ¼v¤lªº¥Ø¼Ğ¦ì¸m¡]³q±`¬O³q¹Dªº³»³¡¡^
+    // å½±å­çš„ç›®æ¨™ä½ç½®ï¼ˆé€šå¸¸æ˜¯é€šé“çš„é ‚éƒ¨ï¼‰
     public Transform endPoint;
 
-    // ¬O§_¥¿¦b°l»°
+    // æ˜¯å¦æ­£åœ¨è¿½è¶•
     private bool isChasing = true;
 
     void Update()
     {
         if (isChasing)
         {
-            // ¨Ï¥Î´¡­ÈÅı¼v¤l³vº¥¦V¥Ø¼Ğ¦ì¸m²¾°Ê
+            // ä½¿ç”¨æ’å€¼è®“å½±å­é€æ¼¸å‘ç›®æ¨™ä½ç½®ç§»å‹•
             transform.position = Vector3.MoveTowards(transform.position, endPoint.position, chaseSpeed * Time.deltaTime);
 
-            // ÀË¬d¼v¤l¬O§_¤w¸g¹F¨ì¥Ø¼Ğ¦ì¸m
+            // æª¢æŸ¥å½±å­æ˜¯å¦å·²ç¶“é”åˆ°ç›®æ¨™ä½ç½®
             if (Vector3.Distance(transform.position, endPoint.position) < 0.1f)
             {
                 isChasing = false;
-                // ¼v¤l¹F¨ì²×ÂI«á¥i¥H°õ¦æªº¾Ş§@¡A¨Ò¦pµ²§ô¹CÀ¸
+                // å½±å­é”åˆ°çµ‚é»å¾Œå¯ä»¥åŸ·è¡Œçš„æ“ä½œï¼Œä¾‹å¦‚çµæŸéŠæˆ²
                 Debug.Log("Shadow reached the end point!");
             }
         }
     }
 
-    // ·í¼v¤l¸I¨ìª±®a®É
+    // ç•¶å½±å­ç¢°åˆ°ç©å®¶æ™‚
     private void OnTriggerEnter(Collider other)
     {
-        // ÀË¬d¸I¨ìªºª«¥ó¬O§_¦³ "Player" ¼ĞÅÒ
+        // æª¢æŸ¥ç¢°åˆ°çš„ç‰©ä»¶æ˜¯å¦æœ‰ "Player" æ¨™ç±¤
         if (other.CompareTag("Player"))
         {
             Debug.Log("Shadow touched the Player! Restarting the game...");
@@ -40,14 +40,14 @@ public class shadow : MonoBehaviour
         }
     }
 
-    // ¹CÀ¸­«±ÒÅŞ¿è
+    // éŠæˆ²é‡å•Ÿé‚è¼¯
     private void RestartGame()
     {
-        // ­«·s¥[¸ü·í«e³õ´º
+        // é‡æ–°åŠ è¼‰ç•¶å‰å ´æ™¯
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // ¥i¿ï¡G°±¤î©Î­«±Ò°l»°
+    // å¯é¸ï¼šåœæ­¢æˆ–é‡å•Ÿè¿½è¶•
     public void StopChase()
     {
         isChasing = false;

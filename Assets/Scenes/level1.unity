@@ -997,7 +997,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 171285142}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -8367231247473855917, guid: f44447f07b8ed974f956a313e898cd14, type: 3}
 --- !u!4 &171285146
 Transform:
   m_ObjectHideFlags: 0
@@ -3619,7 +3619,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 850523017}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -8367231247473855917, guid: 4a1045c3c448d3d40963f167ea307d04, type: 3}
 --- !u!4 &850523022
 Transform:
   m_ObjectHideFlags: 0
@@ -4208,7 +4208,6 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194230}
-  - component: {fileID: 963194231}
   - component: {fileID: 963194232}
   m_Layer: 0
   m_Name: Main Camera
@@ -4377,18 +4376,6 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
---- !u!114 &963194231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5df224e3cdebf04e96664c68d666021, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!82 &963194232
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4678,7 +4665,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 994463250}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -8367231247473855917, guid: f44447f07b8ed974f956a313e898cd14, type: 3}
 --- !u!1 &1001334061
 GameObject:
   m_ObjectHideFlags: 0
@@ -4869,7 +4856,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1016973929}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -8367231247473855917, guid: f44447f07b8ed974f956a313e898cd14, type: 3}
 --- !u!1 &1021349683
 GameObject:
   m_ObjectHideFlags: 0
@@ -6642,7 +6629,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1406986929}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -8367231247473855917, guid: f44447f07b8ed974f956a313e898cd14, type: 3}
 --- !u!1 &1407261097
 GameObject:
   m_ObjectHideFlags: 0
@@ -6836,7 +6823,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1411648970}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -8367231247473855917, guid: f44447f07b8ed974f956a313e898cd14, type: 3}
 --- !u!1 &1418924123
 GameObject:
   m_ObjectHideFlags: 0
@@ -7838,7 +7825,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1613963158}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -8367231247473855917, guid: f44447f07b8ed974f956a313e898cd14, type: 3}
 --- !u!1 &1660078570
 GameObject:
   m_ObjectHideFlags: 0
@@ -8496,7 +8483,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1804193875}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -8367231247473855917, guid: f44447f07b8ed974f956a313e898cd14, type: 3}
 --- !u!1 &1806073243
 GameObject:
   m_ObjectHideFlags: 0
@@ -9175,7 +9162,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1936965060}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -8367231247473855917, guid: f44447f07b8ed974f956a313e898cd14, type: 3}
 --- !u!1 &1942026769
 GameObject:
   m_ObjectHideFlags: 0
