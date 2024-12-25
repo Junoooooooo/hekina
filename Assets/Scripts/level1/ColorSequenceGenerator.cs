@@ -76,7 +76,7 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     void GenerateColorSequenceForCube(GameObject cube)
     {
-        int sequenceLength = Random.Range(3, 5); // 隨機生成 3 到 5 的顏色序列長度
+        int sequenceLength = Random.Range(2, 3); // 隨機生成 3 到 5 的顏色序列長度
         Color[] colorSequence = new Color[sequenceLength]; // 初始化顏色序列
 
         for (int i = 0; i < sequenceLength; i++)
