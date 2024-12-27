@@ -6,8 +6,10 @@ public class DoorUnlock : MonoBehaviour
 {
     public GameObject[] doors; // 儲存多道大門的 GameObject 陣列
     public GameObject[] sephers; // 儲存需要隱藏的 SEPHER GameObject 陣列
+    public AudioClip leftKeySound;  // 左鍵音效
+    public AudioClip rightKeySound; // 右鍵音效
+    private AudioSource audioSource; // 音源
     private int currentDoorIndex = 0; // 當前大門索引
-    private NodeController nodeController; // 引用 NodeController
     private string[][] sequences = new string[][] // 所有門的序列
     {
         new string[] { "right", "right", "left", "left", "left" }, // 第一道門
@@ -28,8 +30,8 @@ public class DoorUnlock : MonoBehaviour
 
     void Start()
     {
-      //  nodeController = FindObjectOfType<NodeController>();
-        StartUnlocking();
+        audioSource = GetComponent<AudioSource>(); // 初始化 AudioSource
+        StartUnlocking(); // 開始解鎖流程
     }
 
     void Update()
@@ -55,8 +57,19 @@ public class DoorUnlock : MonoBehaviour
     private IEnumerator HandleInputWithDelay(string input)
     {
         canAcceptInput = false; // 暫時禁用輸入
-        HandleInput(input);
-        yield return new WaitForSeconds(0.2f); // 等待 0.1 秒
+
+        // 播放對應的音效
+        if (input == "left")
+        {
+            PlaySound(leftKeySound); // 播放左鍵音效
+        }
+        else if (input == "right")
+        {
+            PlaySound(rightKeySound); // 播放右鍵音效
+        }
+
+        HandleInput(input); // 處理輸入邏輯
+        yield return new WaitForSeconds(0.4f); // 等待 0.4 秒
         canAcceptInput = true; // 恢復輸入
     }
 
@@ -82,7 +95,6 @@ public class DoorUnlock : MonoBehaviour
             }
         }
     }
-
 
     private bool CheckSequence()
     {
@@ -119,12 +131,14 @@ public class DoorUnlock : MonoBehaviour
         {
             Debug.Log("All doors unlocked!");
         }
+    }
 
-        // 通知 NodeController 繼續移動
-        /*if (nodeController != null)
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip != null && audioSource != null)
         {
-            nodeController.UnlockCurrentDoor();
-        }*/
+            audioSource.PlayOneShot(clip, 1.0f); // 最大音量播放音效
+        }
     }
 
     public void StartUnlocking()
