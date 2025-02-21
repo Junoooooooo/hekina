@@ -24,7 +24,7 @@ public class skip : MonoBehaviour
         string currentSceneName = SceneManager.GetActiveScene().name;
 
         // 根據當前場景名稱切換到下一關
-        if (currentSceneName == "level1")
+       if (currentSceneName == "level1")
         {
             SceneManager.LoadScene("level2");
         }
