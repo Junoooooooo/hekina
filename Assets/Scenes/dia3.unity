@@ -513,8 +513,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -197.8, y: 190.4}
-  m_SizeDelta: {x: 303.87, y: 140.18}
+  m_AnchoredPosition: {x: -30.8, y: 54.2}
+  m_SizeDelta: {x: 680, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1356550317
 MonoBehaviour:
@@ -970,4 +970,4 @@ MonoBehaviour:
   character2: {fileID: 1580546344}
   character1Animator: {fileID: 1395944242}
   character2Animator: {fileID: 1580546346}
-  typingSpeed: 0.05
+  typingSpeed: 0.03

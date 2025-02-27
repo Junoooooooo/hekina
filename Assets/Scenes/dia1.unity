@@ -242,7 +242,7 @@ MonoBehaviour:
   character2: {fileID: 1050684162}
   character1Animator: {fileID: 862835546}
   character2Animator: {fileID: 1050684164}
-  typingSpeed: 0.05
+  typingSpeed: 0.03
 --- !u!4 &461894358
 Transform:
   m_ObjectHideFlags: 0
@@ -857,8 +857,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -39.5, y: 7.3}
-  m_SizeDelta: {x: 488.9, y: 413.19}
+  m_AnchoredPosition: {x: -39.5, y: 31.61}
+  m_SizeDelta: {x: 564.95, y: 413.19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1984199704
 MonoBehaviour:

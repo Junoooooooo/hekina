@@ -5,45 +5,41 @@ using UnityEngine.UI;
 
 public class DialogueSystem : MonoBehaviour
 {
-    public Text dialogueText;            // 對話框的Text元件
-    public GameObject character1;        // 角色1的GameObject
-    public GameObject character2;        // 角色2的GameObject
-    public Animator character1Animator;  // 角色1的Animator
-    public Animator character2Animator;  // 角色2的Animator
-    public float typingSpeed = 0.05f;    // 逐字顯示的速度
-    private string[] character1Dialogues; // 角色1的對話
-    private string[] character2Dialogues; // 角色2的對話
-    private int index = 0;               // 當前顯示的對話索引
-    private bool isCharacter1Turn = true; // 當前是角色1說話
-    private bool isDialogueFinished = false;  // 記錄對話是否結束
+    public Text dialogueText;
+    public GameObject character1;
+    public GameObject character2;
+    public Animator character1Animator;
+    public Animator character2Animator;
+    public float typingSpeed = 0.08f;
+    private string[] dialogues;
+    private int currentDialogueIndex = 0;
+    private bool isDialogueFinished = false;
 
     void Start()
     {
-        character1Dialogues = new string[]
+        dialogues = new string[]
         {
-            "角色1：你好！\n這是角色1的第一段對話。",
-            "角色1：你怎麼樣？\n角色1問候角色2。",
+            "這是一個沉睡的世界。\n每個生命都有屬於自己的色彩，但我們卻被黑暗所囚禁。",
+            "那些色彩，曾是我們的希望，現在卻淹沒在無盡的黑暗中。",
+            "唯有光芒能帶來希望，但…黑影偷走了我們的光。",
+            "那麼，我們該如何找回光明呢？",
+            "我們必須一起走過這條隧道。\n你需要引領我，確保我們能夠觸發正確的光源。",
+            "我將解開那些顏色的謎題，我需要你幫助我保持前進的方向。\n我們的路只有在光明中才能看得見。",
+            "沒問題，我會引領我們走向光明。\n我們一起將黑暗驅逐！"
         };
 
-        character2Dialogues = new string[]
-        {
-            "角色2：嗨！\n這是角色2的回答。",
-            "角色2：我很好！\n謝謝你的關心。",
-        };
-
-        // 開始顯示第一段對話
         StartCoroutine(ShowText());
     }
 
     void Update()
     {
-        // 如果對話已經結束，檢查是否按下任意鍵進入LEVEL1
+        // 如果對話已經結束，且按下任何鍵，就加載 LEVEL1 場景
         if (isDialogueFinished && Input.anyKeyDown)
         {
             LoadLevel1();
         }
-        // 如果空白鍵被按下且對話顯示完畢，進入下一段對話
-        else if (Input.anyKeyDown && dialogueText.text == GetCurrentDialogue())
+        // 如果按下任意鍵，且當前對話已經顯示完畢，就進入下一段對話
+        else if (Input.anyKeyDown && dialogueText.text == dialogues[currentDialogueIndex])
         {
             NextDialogue();
         }
@@ -53,80 +49,45 @@ public class DialogueSystem : MonoBehaviour
     {
         dialogueText.text = "";
 
-        // 顯示當前講話的角色，隱藏另一個角色
-        if (isCharacter1Turn)
+        // 根據當前對話索引顯示不同角色的對話
+        if (currentDialogueIndex == 0 || currentDialogueIndex == 1 || currentDialogueIndex == 2 || currentDialogueIndex == 4 || currentDialogueIndex == 5)
         {
-            // 角色1說話時顯示角色1，隱藏角色2
             character1.SetActive(true);
             character2.SetActive(false);
             character1Animator.SetTrigger("dia1");
         }
-        else
+        else if (currentDialogueIndex == 3 || currentDialogueIndex == 6)
         {
-            // 角色2說話時顯示角色2，隱藏角色1
             character1.SetActive(false);
             character2.SetActive(true);
-            character2Animator.SetTrigger("dia1-2");
+            character2Animator.SetTrigger("dia2");
         }
 
-        // 逐字顯示當前角色的對話
-        foreach (char letter in GetCurrentDialogue().ToCharArray())
+        // 逐字顯示對話
+        foreach (char letter in dialogues[currentDialogueIndex].ToCharArray())
         {
             dialogueText.text += letter;
             yield return new WaitForSeconds(typingSpeed);
-        }
-
-        // 當角色2講完最後一句話，標記對話結束
-        if (!isCharacter1Turn && index == character2Dialogues.Length - 1)
-        {
-            isDialogueFinished = true;
         }
     }
 
     void NextDialogue()
     {
-        if (isCharacter1Turn)
+        // 確保在對話結束後，不會再顯示下一段對話
+        if (currentDialogueIndex < dialogues.Length - 1)
         {
-            if (index < character1Dialogues.Length - 1)
-            {
-                index++;
-            }
-            else
-            {
-                // 角色1講完後，切換到角色2
-                index = 0;
-                isCharacter1Turn = false;
-            }
+            currentDialogueIndex++;
+            StartCoroutine(ShowText());
         }
         else
         {
-            if (index < character2Dialogues.Length - 1)
-            {
-                index++;
-            }
-            else
-            {
-                // 角色2講完後，標記對話結束並準備進入下一場景
-                index = 0;
-                isDialogueFinished = true; // 標記為對話結束
-            }
+            isDialogueFinished = true; // 表示對話結束
         }
-
-        // 進入下一段對話
-        StartCoroutine(ShowText());
     }
 
-    string GetCurrentDialogue()
-    {
-        if (isCharacter1Turn)
-            return character1Dialogues[index];
-        else
-            return character2Dialogues[index];
-    }
-
-    // 加載 LEVEL1 場景
     void LoadLevel1()
     {
+        // 加載 LEVEL1 場景
         SceneManager.LoadScene("level1");
     }
 }
