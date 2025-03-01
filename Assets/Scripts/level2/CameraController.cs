@@ -8,6 +8,7 @@ public class CameraController : MonoBehaviour
     public float rotationStep = 10f; // 每次旋轉的角度
     private Quaternion targetRotation; // 目標旋轉
 
+
     void Start()
     {
         // 初始化目標旋轉為當前攝影機的旋轉
@@ -52,6 +53,8 @@ public class CameraController : MonoBehaviour
             LoadLevel3(); // 加载 Level 3
         }
     }
+
+
 
     // 加载 Level3
     void LoadLevel3()
