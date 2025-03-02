@@ -3,63 +3,63 @@ using UnityEngine.SceneManagement;
 
 public class CameraController : MonoBehaviour
 {
-    public float moveSpeed = 10f; // 移動速度
-    public float rotationSpeed = 2f; // 旋轉的平滑速度
-    public float rotationStep = 10f; // 每次旋轉的角度
-    private Quaternion targetRotation; // 目標旋轉
-
+    public float moveSpeed = 10f;
+    public float rotationSpeed = 100f;
+    private Rigidbody rb;
+    private Quaternion targetRotation;
 
     void Start()
     {
-        // 初始化目標旋轉為當前攝影機的旋轉
+        rb = GetComponent<Rigidbody>(); // 取得 Rigidbody
         targetRotation = transform.rotation;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        // 只用 W 和 S 控制前後移動
+        Vector3 moveDirection = Vector3.zero;
+
+        // W S 控制前後移動（用 Rigidbody 計算碰撞）
         if (Input.GetKey(KeyCode.W))
         {
-            Vector3 forwardMovement = transform.forward;
-            transform.position += forwardMovement * moveSpeed * Time.deltaTime;
+            moveDirection += transform.forward;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            Vector3 backwardMovement = -transform.forward;
-            transform.position += backwardMovement * moveSpeed * Time.deltaTime;
+            moveDirection -= transform.forward;
         }
 
-        // A 和 D 控制旋轉
+        // 移動方式：Rigidbody.MovePosition
+        rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
+
+        // A D 控制旋轉
+        float rotationAmount = 0f;
         if (Input.GetKey(KeyCode.A))
         {
-            // 每次旋轉基於當前目標旋轉，向左轉
-            targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 15f, 0);
+            rotationAmount -= rotationSpeed * Time.fixedDeltaTime;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            // 每次旋轉基於當前目標旋轉，向右轉
-            targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 15f, 0);
+            rotationAmount += rotationSpeed * Time.fixedDeltaTime;
         }
 
-        // 平滑插值到目標旋轉
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+        if (rotationAmount != 0f)
+        {
+            targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + rotationAmount, 0);
+            rb.MoveRotation(targetRotation);
+        }
     }
+
     void OnCollisionEnter(Collision collision)
     {
-        // 如果碰到 goal 层
         if (collision.gameObject.layer == LayerMask.NameToLayer("goal"))
         {
             Debug.Log("Goal reached! Loading Level 3...");
-            LoadLevel3(); // 加载 Level 3
+            LoadLevel3();
         }
     }
 
-
-
-    // 加载 Level3
     void LoadLevel3()
     {
-        SceneManager.LoadScene("level3"); // 替换为实际的 Level3 场景名称
+        SceneManager.LoadScene("level3");
     }
-
 }

@@ -15,14 +15,26 @@ EditorBuildSettings:
     path: Assets/Scenes/dia1.unity
     guid: 88fd5542d15da554289bc86f561cb9c3
   - enabled: 1
+    path: Assets/Scenes/instructuin1.unity
+    guid: c0d4b866205e5324a920e462d8f67976
+  - enabled: 1
     path: Assets/Scenes/level1.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/Scenes/dia2.unity
     guid: ad3da39831957934ea6119489f7d0d72
   - enabled: 1
+    path: Assets/Scenes/instruction2.unity
+    guid: 3c39c2a7c50b4e44db85ab2be565cf13
+  - enabled: 1
     path: Assets/Scenes/level2.unity
     guid: 28676c7e71199b345aa79d998f36547d
+  - enabled: 1
+    path: Assets/Scenes/dia3.unity
+    guid: f7c54fa4d3a8f08489f533a34a82020c
+  - enabled: 1
+    path: Assets/Scenes/instruction3.unity
+    guid: 72a54d6aa1f07fd4680d49944e4519c6
   - enabled: 1
     path: Assets/Scenes/level3.unity
     guid: b341423f78c576c459207af50d2934c7
