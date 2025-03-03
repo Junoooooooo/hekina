@@ -8,14 +8,15 @@ public class DoorUnlock : MonoBehaviour
     public GameObject[] sephers; // 儲存需要隱藏的 SEPHER GameObject 陣列
     public AudioClip leftKeySound;  // 左鍵音效
     public AudioClip rightKeySound; // 右鍵音效
+    public AudioClip downKeySound; // 右鍵音效
     private AudioSource audioSource; // 音源
     private int currentDoorIndex = 0; // 當前大門索引
     private string[][] sequences = new string[][] // 所有門的序列
     {
-        new string[] { "right", "right", "left", "left", "left" }, // 第一道門
+        new string[] { "right", "right", "left", "down", "right" }, // 第一道門
         new string[] { "right", "left", "right", "left", "right" }, // 第二道門
-        new string[] { "left", "right", "right", "left", "right" }, // 第三道門
-        new string[] { "left", "right", "left", "right", "left" }, // 第四道門
+        new string[] { "left", "right", "left", "left", "left" }, // 第三道門
+        new string[] { "right", "right", "left", "down", "right" }, // 第四道門
         new string[] { "right", "left", "left", "right", "right" }, // 第五道門
         new string[] { "left", "right", "left", "right", "right" }, // 第六道門
         new string[] { "right", "right", "left", "left", "left" }, // 第七道門
@@ -51,6 +52,14 @@ public class DoorUnlock : MonoBehaviour
             {
                 StartCoroutine(HandleInputWithDelay("right"));
             }
+            else if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                StartCoroutine(HandleInputWithDelay("up"));
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                StartCoroutine(HandleInputWithDelay("down"));
+            }
         }
     }
 
@@ -67,9 +76,13 @@ public class DoorUnlock : MonoBehaviour
         {
             PlaySound(rightKeySound); // 播放右鍵音效
         }
+        else if (input == "down")
+        {
+            PlaySound(downKeySound); // 播放右鍵音效
+        }
 
         HandleInput(input); // 處理輸入邏輯
-        yield return new WaitForSeconds(0.4f); // 等待 0.4 秒
+        yield return new WaitForSeconds(0.5f); // 等待 0.4 秒
         canAcceptInput = true; // 恢復輸入
     }
 

@@ -22,7 +22,7 @@ public class ColorSequenceGenerator : MonoBehaviour
     private Dictionary<GameObject, bool> isInputActive = new Dictionary<GameObject, bool>(); // 每個CUBE是否可接受輸入
     private Dictionary<GameObject, bool> hasTriggered = new Dictionary<GameObject, bool>(); // 每個CUBE是否已觸發顏色生成
 
-    private Color[] colors = { Color.red, Color.yellow, Color.blue }; // 可用顏色
+    private Color[] colors = { new Color(1f, 0.3f, 0.5f), Color.yellow, Color.blue }; // 可用顏色
 
     void Start()
     {
@@ -60,15 +60,15 @@ public class ColorSequenceGenerator : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.UpArrow))
                 {
-                    CheckInput(cube, Color.red);
+                    CheckInput(cube, Color.yellow);
                 }
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
                     CheckInput(cube, Color.blue);
                 }
-                if (Input.GetKeyDown(KeyCode.DownArrow))
+                if (Input.GetKeyDown(KeyCode.LeftArrow))
                 {
-                    CheckInput(cube, Color.yellow);
+                    CheckInput(cube, new Color(1f, 0.3f, 0.5f)); ;
                 }
             }
         }
@@ -76,7 +76,7 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     void GenerateColorSequenceForCube(GameObject cube)
     {
-        int sequenceLength = Random.Range(2, 3); // 隨機生成 3 到 5 的顏色序列長度
+        int sequenceLength = Random.Range(3, 3); // 隨機生成 3 到 5 的顏色序列長度
         Color[] colorSequence = new Color[sequenceLength]; // 初始化顏色序列
 
         for (int i = 0; i < sequenceLength; i++)
@@ -105,18 +105,18 @@ public class ColorSequenceGenerator : MonoBehaviour
             DynamicGI.SetEmissive(cubeRenderer, currentColor); // 更新全局光照系統
 
             // 執行顏色漸變
-            yield return StartCoroutine(ColorFade(cube, currentColor, 0.3f));
+            yield return StartCoroutine(ColorFade(cube, currentColor, 0.15f));
 
-            yield return new WaitForSeconds(0.06f); // 顯示顏色多少秒
+            yield return new WaitForSeconds(0.15f); // 顯示顏色多少秒
 
             // 重置顏色為原始顏色
-            yield return StartCoroutine(ColorFade(cube, Color.white, 0.3f)); // 漸變回白色
+            yield return StartCoroutine(ColorFade(cube, Color.white, 0.15f)); // 漸變回白色
 
             // 重置發光顏色
             cubeRenderer.material.SetColor("_EmissionColor", Color.black); // 重置發光顏色為黑色
             DynamicGI.SetEmissive(cubeRenderer, Color.black); // 更新全局光照系統
 
-            yield return new WaitForSeconds(0.06f); // 等待多少秒再顯示下一個顏色
+            yield return new WaitForSeconds(0.15f); // 等待多少秒再顯示下一個顏色
         }
 
         // 顯示完畢後，開始接受輸入

@@ -18,9 +18,10 @@ public class PlayerController : MonoBehaviour
     private bool isHoldingSpace = false;        // 是否按住空白鍵
     private float holdTime = 0f;                // 按住空白鍵的時間
     private float targetLightIntensity = 0f;    // 目標燈光亮度
-    private float lightIntensityDecayRate = 1f; // 燈光衰減速率
+    private float lightIntensityDecayRate = 5f; // 燈光衰減速率
 
-    public float timeRemaining = 180f;    // 3分鐘 = 180秒
+
+    public float timeRemaining = 300f;    // 3分鐘 = 180秒
     public TMP_Text timerText;                  // 連接 UI 的 Text 元件
 
     private void Start()
