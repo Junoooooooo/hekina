@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/dia1.unity
     guid: 88fd5542d15da554289bc86f561cb9c3
   - enabled: 1
-    path: Assets/Scenes/instructuin1.unity
+    path: Assets/Scenes/instruction1.unity
     guid: c0d4b866205e5324a920e462d8f67976
   - enabled: 1
     path: Assets/Scenes/level1.unity

@@ -88,6 +88,6 @@ public class DialogueSystem : MonoBehaviour
     void LoadLevel1()
     {
         // ¥[¸ü LEVEL1 ³õ´º
-        SceneManager.LoadScene("level1");
+        SceneManager.LoadScene("instruction1");
     }
 }

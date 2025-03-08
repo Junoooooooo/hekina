@@ -17,7 +17,7 @@ public class CutsceneManager : MonoBehaviour
 
     void Start()
     {
-        videoPlayer.loopPointReached += OnVideoEnd; // 影片播放完畢時執行
+        //videoPlayer.loopPointReached += OnVideoEnd; // 影片播放完畢時執行
         displayImage.gameObject.SetActive(false);   // 初始時隱藏圖片
     }
 
@@ -37,14 +37,14 @@ public class CutsceneManager : MonoBehaviour
         }
     }
 
-    void OnVideoEnd(VideoPlayer vp)
+   /* void OnVideoEnd(VideoPlayer vp)
     {
         if (!videoSkipped) // 確保只有影片正常結束時才切換
         {
             Debug.Log("✅ 影片播放完畢，切換到圖片");
             StartCoroutine(ShowImage());
         }
-    }
+    }*/
 
     IEnumerator ShowImage()
     {
