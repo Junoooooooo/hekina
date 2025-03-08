@@ -1177,11 +1177,12 @@ MonoBehaviour:
   spawnCount: 10
   lightDuration: 1
   spawnIntervalRange: {x: 0.5, y: 2}
-  keyMappings: 110100001201000013010000
+  keyMappings: 11010000120100001301000014010000
   lightColors:
-  - {r: 1, g: 0, b: 0, a: 0}
-  - {r: 1, g: 0.9760871, b: 0, a: 0}
-  - {r: 1, g: 0, b: 1, a: 0}
+  - {r: 1, g: 1, b: 0, a: 1}
+  - {r: 0.588, g: 0, b: 1, a: 0}
+  - {r: 0.43137252, g: 0.8576197, b: 1, a: 1}
+  - {r: 1, g: 0.69433963, b: 0.90377367, a: 1}
   layerLights:
   - {fileID: 1666729279}
   - {fileID: 706838374}
