@@ -71,7 +71,7 @@ public class CrosshairAim : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F) && currentTarget != null)
+        if (Input.GetKeyDown(KeyCode.Mouse1) && currentTarget != null)
         {
             Debug.Log("successful");
             if (targetsManager != null)
@@ -93,11 +93,11 @@ public class CrosshairAim : MonoBehaviour
         float horizontal = 0f;
         float vertical = 0f;
 
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.S))
         {
             vertical = 1f;
         }
-        else if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.W))
         {
             vertical = -1f;
         }

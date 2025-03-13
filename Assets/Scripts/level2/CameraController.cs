@@ -19,11 +19,11 @@ public class CameraController : MonoBehaviour
         Vector3 moveDirection = Vector3.zero;
 
         // W S 控制前後移動（用 Rigidbody 計算碰撞）
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.S))
         {
             moveDirection += transform.forward;
         }
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.W))
         {
             moveDirection -= transform.forward;
         }

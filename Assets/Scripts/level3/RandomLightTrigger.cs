@@ -38,15 +38,18 @@ public class RandomLightTrigger : MonoBehaviour
             yield break;
         }
 
+        // Make sure to use the shortest array length to avoid index out of range
+        int arrayLength = Mathf.Min(lightPrefabs.Length, keyMappings.Length, lightColors.Length);
+
         for (int i = 0; i < spawnCount; i++)
         {
             if (correctKeyPresses >= totalCorrectPressesRequired)
             {
                 Debug.Log("5 correct key presses reached. Stopping light spawn.");
-                break; // 停止生成光點
+                break; // Stop spawning lights if the target is reached
             }
 
-            int randomColorIndex = Random.Range(0, lightColors.Length);
+            int randomColorIndex = Random.Range(0, arrayLength); // Use arrayLength instead of lightColors.Length
             Color randomColor = lightColors[randomColorIndex];
 
             Vector3 randomPosition = new Vector3(
@@ -96,6 +99,7 @@ public class RandomLightTrigger : MonoBehaviour
             Debug.Log("Not enough correct key presses.");
         }
     }
+
 
     private void UnlockLightsAndObjects()
     {

@@ -15,6 +15,9 @@ public class DialogueSystem : MonoBehaviour
     private int currentDialogueIndex = 0;
     private bool isDialogueFinished = false;
 
+    // 新增音效變數
+    public AudioSource keyPressSound;  // 用來播放按鍵音效的 AudioSource
+
     void Start()
     {
         dialogues = new string[]
@@ -41,6 +44,12 @@ public class DialogueSystem : MonoBehaviour
         // 如果按下任意鍵，且當前對話已經顯示完畢，就進入下一段對話
         else if (Input.anyKeyDown && dialogueText.text == dialogues[currentDialogueIndex])
         {
+            // 播放按鍵音效
+            if (keyPressSound != null)
+            {
+                keyPressSound.Play();
+            }
+
             NextDialogue();
         }
     }

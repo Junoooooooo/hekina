@@ -24,13 +24,45 @@ public class skip : MonoBehaviour
         string currentSceneName = SceneManager.GetActiveScene().name;
 
         // 根據當前場景名稱切換到下一關
-       if (currentSceneName == "level1")
+       if (currentSceneName == "dia1")
+        {
+            SceneManager.LoadScene("instruction1");
+        }
+        else if (currentSceneName == "instruction1")
+        {
+            SceneManager.LoadScene("level1");
+        }
+        else if (currentSceneName == "level1")
+        {
+            SceneManager.LoadScene("dia2");
+        }
+        else if (currentSceneName == "dia2")
+        {
+            SceneManager.LoadScene("instruction2");
+        }
+        else if (currentSceneName == "instruction2")
         {
             SceneManager.LoadScene("level2");
         }
         else if (currentSceneName == "level2")
         {
+            SceneManager.LoadScene("dia3");
+        }
+        else if (currentSceneName == "dia3")
+        {
+            SceneManager.LoadScene("instruction3");
+        }
+        else if (currentSceneName == "instruction3")
+        {
             SceneManager.LoadScene("level3");
+        }
+        else if (currentSceneName == "level3")
+        {
+            SceneManager.LoadScene("end");
+        }
+        else if (currentSceneName == "end")
+        {
+            SceneManager.LoadScene("start");
         }
         else
         {

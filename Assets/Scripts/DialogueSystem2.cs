@@ -15,6 +15,10 @@ public class DialogueSystem2 : MonoBehaviour
     private int currentDialogueIndex = 0; // 當前對話的索引
     private bool isDialogueFinished = false; // 記錄對話是否結束
 
+    // 新增音效來源與音效剪輯
+    public AudioSource audioSource;     // 音效來源
+    public AudioClip keyPressSound;     // 按鍵音效
+
     void Start()
     {
         // 所有角色的對話，根據順序排列
@@ -36,11 +40,13 @@ public class DialogueSystem2 : MonoBehaviour
         // 檢查對話是否已經結束並等待玩家按下鍵來進入下一關
         if (isDialogueFinished && Input.anyKeyDown)
         {
+            audioSource.PlayOneShot(keyPressSound);  // 播放按鍵音效
             LoadLevel1(); // 加載下一關
         }
         // 如果空白鍵被按下且對話顯示完畢，進入下一段對話
         else if (Input.anyKeyDown && dialogueText.text == dialogues[currentDialogueIndex])
         {
+            audioSource.PlayOneShot(keyPressSound);  // 播放按鍵音效
             NextDialogue();
         }
     }

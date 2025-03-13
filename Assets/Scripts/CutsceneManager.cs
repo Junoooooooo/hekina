@@ -11,13 +11,15 @@ public class CutsceneManager : MonoBehaviour
     public Image displayImage;     // 顯示圖片的 UI Image
     public Sprite nextImage;       // 需要切換的圖片
 
+    public AudioSource audioSource; // 音效來源
+    public AudioClip keyPressSound; // 按鍵音效
+
     private bool videoSkipped = false; // 是否已跳過影片
     private bool imageDisplayed = false; // 是否已顯示圖片
     private bool inputLocked = false; // 控制輸入是否鎖定
 
     void Start()
     {
-        //videoPlayer.loopPointReached += OnVideoEnd; // 影片播放完畢時執行
         displayImage.gameObject.SetActive(false);   // 初始時隱藏圖片
     }
 
@@ -27,24 +29,25 @@ public class CutsceneManager : MonoBehaviour
 
         if (!videoSkipped && Input.anyKeyDown) // 任何時候都能跳過影片
         {
+            PlayKeyPressSound(); // 播放按鍵音效
             Debug.Log("🎬 影片被跳過，切換到圖片");
             StartCoroutine(ShowImage());
         }
         else if (imageDisplayed && Input.anyKeyDown) // 按鍵切換到下一關
         {
+            PlayKeyPressSound(); // 播放按鍵音效
             Debug.Log("🚀 進入下一關");
             StartCoroutine(LoadNextLevel());
         }
     }
 
-   /* void OnVideoEnd(VideoPlayer vp)
+    void PlayKeyPressSound()
     {
-        if (!videoSkipped) // 確保只有影片正常結束時才切換
+        if (audioSource != null && keyPressSound != null)
         {
-            Debug.Log("✅ 影片播放完畢，切換到圖片");
-            StartCoroutine(ShowImage());
+            audioSource.PlayOneShot(keyPressSound);  // 播放按鍵音效
         }
-    }*/
+    }
 
     IEnumerator ShowImage()
     {
