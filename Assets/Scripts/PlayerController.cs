@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public float minCubeSpawnInterval = 1f;    // 生成間隔的最小值
     public float maxCubeSpawnInterval = 3f;    // 生成間隔的最大值
     public Slider energyBar;                    // 能量量條的 UI 元件
+  
 
     private bool isHoldingSpace = false;        // 是否按住空白鍵
     private float holdTime = 0f;                // 按住空白鍵的時間
@@ -21,11 +22,13 @@ public class PlayerController : MonoBehaviour
     private float lightIntensityDecayRate = 5f; // 燈光衰減速率
 
 
+
     public float timeRemaining = 300f;    // 3分鐘 = 180秒
     public TMP_Text timerText;                  // 連接 UI 的 Text 元件
 
     private void Start()
     {
+       
         UpdateTimer();  // 初始化顯示時間 
         UpdateEnergyBar(); // 初始化能量條
 
@@ -43,6 +46,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+
         UpdateTimer();
         HandleInput();
         UpdateEnergy();
@@ -51,8 +55,10 @@ public class PlayerController : MonoBehaviour
 
     private void HandleInput()
     {
+
         if (Input.GetKey(KeyCode.Space))
         {
+         
             isHoldingSpace = true;
             holdTime += Time.deltaTime; // 計算按住空白鍵的時間
 
@@ -123,13 +129,17 @@ public class PlayerController : MonoBehaviour
                 // 設定格式為 "分鐘:秒" 的形式
                 timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
             }
-            else
+     
+        
+        else
             {
                 // 如果時間已經結束，顯示 "Game Over"
                 timerText.text = "00:00";
             }
         }
     }
+
+
     private void UpdateEnergyBar()
     {
         if (energyBar != null)

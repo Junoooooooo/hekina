@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.UI;
 
 public class DoorUnlock : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class DoorUnlock : MonoBehaviour
     public AudioClip leftKeySound;  // 左鍵音效
     public AudioClip rightKeySound; // 右鍵音效
     public AudioClip downKeySound; // 右鍵音效
+    public Image nextImage;
     private AudioSource audioSource; // 音源
     private int currentDoorIndex = 0; // 當前大門索引
     private string[][] sequences = new string[][] // 所有門的序列
@@ -37,8 +39,16 @@ public class DoorUnlock : MonoBehaviour
 
     void Update()
     {
-        CheckInput();
+        CheckInput(); // 保持原本的輸入檢查
+
+        // **按下滑鼠右鍵時隱藏圖片**
+        if (Input.GetMouseButtonDown(1) && nextImage != null && nextImage.gameObject.activeSelf)
+        {
+            nextImage.gameObject.SetActive(false);
+            Time.timeScale = 1; // 恢復遊戲
+        }
     }
+
 
     private void CheckInput()
     {
@@ -82,7 +92,7 @@ public class DoorUnlock : MonoBehaviour
         }
 
         HandleInput(input); // 處理輸入邏輯
-        yield return new WaitForSeconds(0.5f); // 等待 0.4 秒
+        yield return new WaitForSeconds(0.2f); // 等待 0.4 秒
         canAcceptInput = true; // 恢復輸入
     }
 
@@ -132,6 +142,13 @@ public class DoorUnlock : MonoBehaviour
         if (currentDoorIndex < sephers.Length)
         {
             sephers[currentDoorIndex].SetActive(false); // 隱藏對應的 SEPHER
+        }
+
+        // **如果是第一道門，顯示圖片**
+        if (currentDoorIndex == 0 && nextImage != null)
+        {
+            nextImage.gameObject.SetActive(true);
+            Time.timeScale = 0; // 暫停遊戲
         }
 
         currentDoorIndex++; // 移動到下一道門
