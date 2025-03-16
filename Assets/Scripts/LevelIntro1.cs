@@ -1,31 +1,61 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
+
 
 public class LevelIntro1 : MonoBehaviour
 {
-    public RawImage rawImage;          // ©ì¤J RawImage
-    public Sprite[] videoFrames;       // ©ì¤J©Ò¦³ PNG §Ç¦C¹Ï
-    public GameObject player;          // ¨¤¦âª«¥ó
-    public GameObject enemies;         // ¼Ä¤Hª«¥ó (¦pªG¦³)
-    public Image endImage;             // ²Ä¤@±iµ²§ô¹Ï¤ù
-    public Image nextImage;            // ²Ä¤G±i¹Ï¤ù (ªø«ö 3 ¬íªÅ¥ÕÁä«áÅã¥Ü)
-    public AudioSource introAudioSource; // Ãö¥d°Êµe­µ¼Ö
-    public AudioSource mainAudioSource; // ¹CÀ¸­I´º­µ¼Ö
-    public AudioClip introMusic;       // Ãö¥d°Êµeªº­µ¼Ö (mp3 ©Î wav)
-    public float frameRate = 30f;      // ¨C¬í¼½©ñªº´V¼Æ
+    public PlayerController spawnManager;
+    public PlayerController playerEnergy;  // ç›´æ¥åœ¨ Inspector å…§æ‹–å…¥å°æ‡‰çš„ç‰©ä»¶
+    public PlayerController updateEnergybar;
+    public PlayerController updateEnergy;
+    public RawImage rawImage;          // æ‹–å…¥ RawImage
+    public Sprite[] videoFrames;       // æ‹–å…¥æ‰€æœ‰ PNG åºåˆ—åœ–
+    public GameObject player;          // è§’è‰²ç‰©ä»¶
+    public GameObject enemies;         // æ•µäººç‰©ä»¶ (å¦‚æœæœ‰)
+    public Image endImage;             // ç¬¬ä¸€å¼µçµæŸåœ–ç‰‡
+    public Image nextImage;            // ç¬¬äºŒå¼µåœ–ç‰‡ (é•·æŒ‰ 3 ç§’ç©ºç™½éµå¾Œé¡¯ç¤º)
+    public AudioSource introAudioSource; // é—œå¡å‹•ç•«éŸ³æ¨‚
+    public AudioSource mainAudioSource; // éŠæˆ²èƒŒæ™¯éŸ³æ¨‚
+    public AudioClip introMusic;       // é—œå¡å‹•ç•«çš„éŸ³æ¨‚ (mp3 æˆ– wav)
+    public float frameRate = 30f;      // æ¯ç§’æ’­æ”¾çš„å¹€æ•¸
 
     private int currentFrame = 0;
     private bool isPlaying = true;
     private bool showEndImage = false;
     private bool gameStarted = false;
     private bool showNextImage = false;
-    private float spaceKeyPressTime = 0f;  // ªÅ¥ÕÁä«ö¦í®É¶¡
+    private float spaceKeyPressTime = 0f;  // ç©ºç™½éµæŒ‰ä½æ™‚é–“
 
     void Start()
     {
+        if (updateEnergy != null)
+        {
+            updateEnergy.UpdateEnergy();  // âœ… èª¿ç”¨ RecoverEnergy
+        }
+        else
+        {
+            Debug.LogWarning("playerEnergy æœªæŒ‡å®šï¼");
+        }
+        if (playerEnergy != null)
+        {
+            playerEnergy.RecoverEnergy();  // âœ… èª¿ç”¨ RecoverEnergy
+        }
+        else
+        {
+            Debug.LogWarning("playerEnergy æœªæŒ‡å®šï¼");
+        }
+        if (updateEnergybar != null)
+        {
+            updateEnergybar.UpdateEnergyBar();  // âœ… èª¿ç”¨ RecoverEnergy
+        }
+        else
+        {
+            Debug.LogWarning("playerEnergy æœªæŒ‡å®šï¼");
+        }
+
         if (videoFrames == null || videoFrames.Length == 0)
         {
-            Debug.LogError("videoFrames °}¦C¬°ªÅ¡I½Ğ½T«O¦b Inspector ³]©w PNG §Ç¦C¹Ï");
+            Debug.LogError("videoFrames é™£åˆ—ç‚ºç©ºï¼è«‹ç¢ºä¿åœ¨ Inspector è¨­å®š PNG åºåˆ—åœ–");
             return;
         }
 
@@ -77,9 +107,13 @@ public class LevelIntro1 : MonoBehaviour
 
     void Update()
     {
-        if (showEndImage && Input.GetMouseButton(0))
+        if (showEndImage && Input.GetMouseButton(1))
         {
             StartGame();
+            if (spawnManager != null)
+            {
+                StartCoroutine(spawnManager.SpawnCubes());  // 
+            }
         }
 
         if (gameStarted && !showNextImage)
@@ -88,7 +122,7 @@ public class LevelIntro1 : MonoBehaviour
             {
                 spaceKeyPressTime += Time.deltaTime;
 
-                if (spaceKeyPressTime >= 3f)  // ªø«ö 3 ¬í
+                if (spaceKeyPressTime >= 3f)  // é•·æŒ‰ 3 ç§’
                 {
                     if (nextImage != null)
                     {
@@ -96,7 +130,7 @@ public class LevelIntro1 : MonoBehaviour
                     }
 
                     showNextImage = true;
-                    Time.timeScale = 0f; // ¼È°±¹CÀ¸
+                    Time.timeScale = 0f; // æš«åœéŠæˆ²
                 }
             }
             else
@@ -105,15 +139,15 @@ public class LevelIntro1 : MonoBehaviour
             }
         }
 
-        // ¦pªGÅã¥Ü nextImage¡A¨Ã¥Bª±®a«ö¤U¥ô·NÁä
-        if (showNextImage && Input.GetMouseButton(0))
+        // å¦‚æœé¡¯ç¤º nextImageï¼Œä¸¦ä¸”ç©å®¶æŒ‰ä¸‹ä»»æ„éµ
+        if (showNextImage && Input.GetMouseButton(1))
         {
             if (nextImage != null)
             {
-                nextImage.gameObject.SetActive(false); // ÁôÂÃ nextImage
+                nextImage.gameObject.SetActive(false); // éš±è— nextImage
             }
 
-            // «ì´_¹CÀ¸¨Ã±Ò°Êª±®a©M¼Ä¤H
+            // æ¢å¾©éŠæˆ²ä¸¦å•Ÿå‹•ç©å®¶å’Œæ•µäºº
             StartGame();
         }
     }
@@ -130,6 +164,7 @@ public class LevelIntro1 : MonoBehaviour
         showEndImage = false;
         gameStarted = true;
 
-        Time.timeScale = 1f; // «ì´_¹CÀ¸
+        Time.timeScale = 1f; // æ¢å¾©éŠæˆ²
+
     }
 }

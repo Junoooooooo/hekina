@@ -17,6 +17,7 @@ public class CrosshairAim : MonoBehaviour
 
     public Transform shadow; // 拖入影子物件
     public float dangerDistance = 5f; // 當影子小於這個距離時，準星變紅
+    public Image dark;
 
     private float yaw = 0f;
     private float pitch = 0f;
@@ -33,6 +34,10 @@ public class CrosshairAim : MonoBehaviour
     private Quaternion originalRotation;
     private Quaternion targetRotation;
 
+    private float targetAlpha = 0.8f; // 目標 alpha 值
+    private float currentAlpha = 0f; // 當前 alpha 值
+    private float fadeSpeed = 0.5f; // 漸變速度
+
     void Start()
     {
         if (crosshairUI != null)
@@ -42,6 +47,12 @@ public class CrosshairAim : MonoBehaviour
 
         originalPosition = playerCamera.transform.position;
         originalRotation = playerCamera.transform.rotation;
+
+        if (dark != null)
+        {
+            dark.color = new Color(dark.color.r, dark.color.g, dark.color.b, currentAlpha); // 設定初始為 0
+            dark.enabled = false; // 初始化時禁用
+        }
     }
 
     void Update()
@@ -60,6 +71,7 @@ public class CrosshairAim : MonoBehaviour
                 if (crosshairUI != null)
                 {
                     crosshairUI.color = dangerColor; // 距離內，變紅
+                    dark.enabled = true; // 啟用漸變效果
                 }
             }
             else
@@ -67,8 +79,23 @@ public class CrosshairAim : MonoBehaviour
                 if (crosshairUI != null)
                 {
                     crosshairUI.color = targetUnavailableColor; // 距離外，恢復預設色
+                    dark.enabled = false; // 關閉漸變效果
                 }
             }
+        }
+
+        // 漸變處理
+        if (dark.enabled)
+        {
+            // 漸變效果
+            currentAlpha = Mathf.MoveTowards(currentAlpha, targetAlpha, fadeSpeed * Time.deltaTime);
+            dark.color = new Color(dark.color.r, dark.color.g, dark.color.b, currentAlpha);
+        }
+        else
+        {
+            // 如果漸變被禁用，將 alpha 值返回 0
+            currentAlpha = Mathf.MoveTowards(currentAlpha, 0f, fadeSpeed * Time.deltaTime);
+            dark.color = new Color(dark.color.r, dark.color.g, dark.color.b, currentAlpha);
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse1) && currentTarget != null)
@@ -216,3 +243,4 @@ public class CrosshairAim : MonoBehaviour
         // Application.Quit();
     }
 }
+

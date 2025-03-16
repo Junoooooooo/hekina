@@ -11,8 +11,10 @@ public class PlayerController : MonoBehaviour
     public float minEnergyThreshold = 0f;      // 最小能量閾值
     public Light[] lightSources;                // 燈光源陣列
     public GameObject cubePrefab;               // 立方體預製體
-    public float minCubeSpawnInterval = 1f;    // 生成間隔的最小值
-    public float maxCubeSpawnInterval = 3f;    // 生成間隔的最大值
+    public float existenceTime = 5f; // 立方體存在時間
+
+  public float minCubeSpawnInterval = 1f;    // 生成間隔的最小值
+  public float maxCubeSpawnInterval = 3f;    // 生成間隔的最大值
     public Slider energyBar;                    // 能量量條的 UI 元件
   
 
@@ -23,12 +25,14 @@ public class PlayerController : MonoBehaviour
 
 
 
+
     public float timeRemaining = 300f;    // 3分鐘 = 180秒
     public TMP_Text timerText;                  // 連接 UI 的 Text 元件
 
     private void Start()
     {
-       
+        StartCoroutine(WaitForGameStart());
+
         UpdateTimer();  // 初始化顯示時間 
         UpdateEnergyBar(); // 初始化能量條
 
@@ -40,17 +44,28 @@ public class PlayerController : MonoBehaviour
                 lightSource.intensity = 0f; // 將燈光亮度設為0
             }
         }
-
-        StartCoroutine(SpawnCubes()); // 開始生成立方體
     }
+    IEnumerator WaitForGameStart()
+    {
+        Debug.Log("Waiting for game to start...");
+        // 等待遊戲開始（避免 Time.timeScale = 0 影響生成）
+        yield return new WaitUntil(() => Time.timeScale == 1);
+        Debug.Log("Game Started, Spawning Cubes...");
+        StartCoroutine(SpawnCubes());
+    }
+
 
     private void Update()
     {
-
+        Debug.Log("Time.timeScale: " + Time.timeScale); // 確認時間縮放狀態
         UpdateTimer();
         HandleInput();
         UpdateEnergy();
         UpdateLightIntensity(); // 更新燈光亮度
+        if (Time.timeScale > 0 && Input.GetMouseButtonDown(0))
+        {
+            RecoverEnergy();
+        }
     }
 
     private void HandleInput()
@@ -78,7 +93,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void UpdateEnergy()
+    public void UpdateEnergy()
     {
         if (isHoldingSpace && energy > minEnergyThreshold)
         {
@@ -140,7 +155,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void UpdateEnergyBar()
+    public void UpdateEnergyBar()
     {
         if (energyBar != null)
         {
@@ -148,56 +163,69 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator SpawnCubes()
+    public IEnumerator SpawnCubes()
     {
         Camera mainCamera = Camera.main; // 獲取主攝影機
 
-        while (true) // 不斷生成立方體
+        while (true) // 無限循環生成立方體
         {
-            // 隨機生成一個位置在攝影機視口內
-            float randomX = Random.Range(0.2f, 0.8f); // 視口範圍內隨機 X
-            float randomY = Random.Range(0.2f, 0.8f); // 視口範圍內隨機 Y
-            Vector3 randomViewportPos = new Vector3(randomX, randomY, mainCamera.nearClipPlane + 45f); // Z代表距離攝影機的距離
-
-            // 使用 ViewportToWorldPoint 將視口座標轉換為世界座標
+            // 1. 隨機生成立方體位置
+            float randomX = Random.Range(0.2f, 0.8f);
+            float randomY = Random.Range(0.2f, 0.8f);
+            Vector3 randomViewportPos = new Vector3(randomX, randomY, mainCamera.nearClipPlane + 45f);
             Vector3 spawnPosition = mainCamera.ViewportToWorldPoint(randomViewportPos);
 
-            // 在隨機位置生成立方體
+            // 2. 生成立方體
             GameObject cube = Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
+            Debug.Log($"[生成] 立方體生成於 {spawnPosition}");
 
-            // 隨機生成存在時間
+            cube.isStatic = false; // 確保立方體不是靜態物件
+
+            // 3. 設定立方體的存在時間
             float existenceTime = Random.Range(1f, 3f);
-            float elapsedTime = 0f; // 記錄經過的時間
+            float elapsedTime = 0f;
+            bool isCollected = false;
 
-            // 在存在時間內檢查玩家是否按下 Enter 鍵
             while (elapsedTime < existenceTime)
             {
-                if (Input.GetMouseButtonDown(0))
+                Debug.Log($"[計時] elapsedTime: {elapsedTime} / {existenceTime}");
+
+                // 檢查滑鼠點擊
+                if (Input.GetMouseButtonDown(0) && cube != null)
                 {
-                    RecoverEnergy(); // 玩家成功獲取能量
-                    Destroy(cube); // 刪除立方體
+                    Debug.Log("[點擊] 立方體被點擊，執行銷毀");
+                    RecoverEnergy();
+
+                    Destroy(cube); // 直接銷毀立方體
+                    isCollected = true;
+                    yield return null;
                     break;
                 }
 
-                elapsedTime += Time.deltaTime; // 增加經過的時間
-                yield return null; // 等待下一幀
+                elapsedTime += Time.deltaTime;
+                yield return null;
             }
 
-            // 如果玩家沒有按下 Enter 鍵則刪除立方體
-            Destroy(cube);
+            // 4. 時間到了還沒點擊，則自動銷毀
+            if (!isCollected && cube != null)
+            {
+                Debug.Log("[超時] 立方體時間到，執行銷毀");
+                Destroy(cube);
+            }
 
-            // 隨機生成下一個立方體的生成間隔
+            // 5. 等待下一個立方體生成
             float randomSpawnInterval = Random.Range(minCubeSpawnInterval, maxCubeSpawnInterval);
-            yield return new WaitForSeconds(randomSpawnInterval); // 等待下一次生成
+            Debug.Log($"[等待] 等待 {randomSpawnInterval} 秒後生成下一個立方體");
+            yield return new WaitForSeconds(randomSpawnInterval);
         }
     }
 
-
-    private void RecoverEnergy()
+    public void RecoverEnergy()
     {
         energy += energyRecoveryAmount;
         energy = Mathf.Min(energy, 100f);
         UpdateEnergyBar(); // 更新能量條
+        Debug.Log("能量回復！");
     }
 
 }

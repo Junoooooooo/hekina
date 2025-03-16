@@ -40,13 +40,6 @@ public class DoorUnlock : MonoBehaviour
     void Update()
     {
         CheckInput(); // 保持原本的輸入檢查
-
-        // **按下滑鼠右鍵時隱藏圖片**
-        if (Input.GetMouseButtonDown(1) && nextImage != null && nextImage.gameObject.activeSelf)
-        {
-            nextImage.gameObject.SetActive(false);
-            Time.timeScale = 1; // 恢復遊戲
-        }
     }
 
 
@@ -142,13 +135,6 @@ public class DoorUnlock : MonoBehaviour
         if (currentDoorIndex < sephers.Length)
         {
             sephers[currentDoorIndex].SetActive(false); // 隱藏對應的 SEPHER
-        }
-
-        // **如果是第一道門，顯示圖片**
-        if (currentDoorIndex == 0 && nextImage != null)
-        {
-            nextImage.gameObject.SetActive(true);
-            Time.timeScale = 0; // 暫停遊戲
         }
 
         currentDoorIndex++; // 移動到下一道門

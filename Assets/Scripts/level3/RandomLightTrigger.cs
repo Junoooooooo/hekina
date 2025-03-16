@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI; // 加入 UI 命名空間
 
 public class RandomLightTrigger : MonoBehaviour
 {
@@ -7,12 +8,17 @@ public class RandomLightTrigger : MonoBehaviour
     public BoxCollider spawnArea;    // 用於隨機生成的區域（需要 BoxCollider）
     public int spawnCount = 10;      // 每層生成光點的數量
     public float lightDuration = 1f; // 每個光點持續的時間（秒）
-    public Vector2 spawnIntervalRange = new Vector2(0.5f, 2f); // 光點生成間隔的隨機範圍（最小和最大時間）
+    public Vector2 spawnIntervalRange = new Vector2(0.5f, 2f); // 光點生成間隔的隨機範圍
 
     public KeyCode[] keyMappings;   // 自定義顏色對應的按鍵
     public Color[] lightColors;     // 自定義顏色的列表
     public Light[] layerLights;     // 需要開啟的燈光
-    public GameObject[] layerObjects; // 需要開啟的物件（新增）
+    public GameObject[] layerObjects; // 需要開啟的物件
+
+    public AudioClip correctKeySound; // 成功按下鍵時的音效
+    public AudioClip successSound;    // 完成五次後的成功音效
+    public AudioSource audioSource;   // 音效播放器
+    public Image feedbackImage;       // 顯示成功圖片
 
     private bool hasTriggered = false; // 確保只觸發一次
     private int correctKeyPresses = 0; // 記錄成功按下的光點數量
@@ -26,7 +32,6 @@ public class RandomLightTrigger : MonoBehaviour
             hasTriggered = true; // 防止重複觸發
             Debug.Log("Player entered the trigger zone. Spawning lights...");
             StartCoroutine(SpawnRandomLightsCoroutine());
-            Debug.Log("Triggered Object: " + gameObject.name);
         }
     }
 
@@ -38,7 +43,6 @@ public class RandomLightTrigger : MonoBehaviour
             yield break;
         }
 
-        // Make sure to use the shortest array length to avoid index out of range
         int arrayLength = Mathf.Min(lightPrefabs.Length, keyMappings.Length, lightColors.Length);
 
         for (int i = 0; i < spawnCount; i++)
@@ -46,10 +50,10 @@ public class RandomLightTrigger : MonoBehaviour
             if (correctKeyPresses >= totalCorrectPressesRequired)
             {
                 Debug.Log("5 correct key presses reached. Stopping light spawn.");
-                break; // Stop spawning lights if the target is reached
+                break;
             }
 
-            int randomColorIndex = Random.Range(0, arrayLength); // Use arrayLength instead of lightColors.Length
+            int randomColorIndex = Random.Range(0, arrayLength);
             Color randomColor = lightColors[randomColorIndex];
 
             Vector3 randomPosition = new Vector3(
@@ -76,6 +80,20 @@ public class RandomLightTrigger : MonoBehaviour
                     correctKeyPresses++;
                     keyPressed = true;
                     Debug.Log("Correct key pressed! Total correct: " + correctKeyPresses);
+
+                    // 播放音效
+                    if (audioSource != null && correctKeySound != null)
+                    {
+                        audioSource.PlayOneShot(correctKeySound);
+                    }
+
+                    // 顯示圖片
+                    if (feedbackImage != null)
+                    {
+                        feedbackImage.gameObject.SetActive(true);
+                        StartCoroutine(HideFeedbackImage()); // 0.5 秒後隱藏圖片
+                    }
+
                     break;
                 }
 
@@ -91,6 +109,12 @@ public class RandomLightTrigger : MonoBehaviour
 
         if (correctKeyPresses >= totalCorrectPressesRequired)
         {
+            // 播放完成的音效
+            if (audioSource != null && successSound != null)
+            {
+                audioSource.PlayOneShot(successSound);
+            }
+
             Debug.Log("Successfully pressed 5 keys! Unlocking lights and objects...");
             UnlockLightsAndObjects();
         }
@@ -100,10 +124,17 @@ public class RandomLightTrigger : MonoBehaviour
         }
     }
 
+    private IEnumerator HideFeedbackImage()
+    {
+        yield return new WaitForSeconds(0.5f); // 0.5 秒後隱藏圖片
+        if (feedbackImage != null)
+        {
+            feedbackImage.gameObject.SetActive(false);
+        }
+    }
 
     private void UnlockLightsAndObjects()
     {
-        // 開啟燈光
         if (layerLights != null)
         {
             foreach (Light light in layerLights)
@@ -112,12 +143,11 @@ public class RandomLightTrigger : MonoBehaviour
             }
         }
 
-        // 開啟物件
         if (layerObjects != null)
         {
             foreach (GameObject obj in layerObjects)
             {
-                obj.SetActive(true); // 啟用物件
+                obj.SetActive(true);
             }
         }
 
