@@ -25,9 +25,15 @@ public class ColorSequenceGenerator : MonoBehaviour
     public Image correctImage; // 顯示正確圖案
     public Image incorrectImage; // 顯示錯誤圖案
     public Image secondImage;
+    public AudioSource audioSource; // 用於播放音效
+    public AudioClip correctSound;  // 正確音效
+    public AudioClip incorrectSound; // 錯誤音效
+
     private Light mylight;
     private bool hasShownImage = false; // 確保圖片只顯示一次
     private bool isPaused = false; // 控制是否遊戲暫停
+    private GameObject firstCube; // 用來記錄第一個 Cube
+
 
 
     private Dictionary<GameObject, Color[]> cubeColorSequences = new Dictionary<GameObject, Color[]>(); // 每個CUBE的顏色序列
@@ -41,21 +47,27 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     void Start()
     {
+
         mylight = GetComponent<Light>();
         mylight.enabled = false;
+
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>(); // 如果沒有 AudioSource，就添加一個
+        }
+
         if (secondImage != null)
         {
-            secondImage.gameObject.SetActive(false); // 初始時隱藏 secondImage
+            secondImage.gameObject.SetActive(false);
         }
         foreach (var cubeLightInfo in cubeLightInfos)
         {
-            GameObject cube = cubeLightInfo.cube; // 獲取CUBE
-            GenerateColorSequenceForCube(cube); // 為每個CUBE生成顏色序列
-            currentInputIndex[cube] = 0; // 初始化輸入索引
-            isInputActive[cube] = false; // 初始化輸入狀態
-            hasTriggered[cube] = false; // 初始化觸發狀態
+            GameObject cube = cubeLightInfo.cube;
+            GenerateColorSequenceForCube(cube);
+            currentInputIndex[cube] = 0;
+            isInputActive[cube] = false;
+            hasTriggered[cube] = false;
 
-            // 初始時關閉發光物件的發光效果
             foreach (GameObject emissiveObject in cubeLightInfo.emissiveObjects)
             {
                 Renderer emissiveRenderer = emissiveObject.GetComponent<Renderer>();
@@ -63,7 +75,6 @@ public class ColorSequenceGenerator : MonoBehaviour
             }
         }
 
-        // 初始時隱藏正確與錯誤圖片
         if (correctImage != null)
         {
             correctImage.gameObject.SetActive(false);
@@ -72,8 +83,6 @@ public class ColorSequenceGenerator : MonoBehaviour
         {
             incorrectImage.gameObject.SetActive(false);
         }
-
-        // 初始時，隱藏圖片
         if (pauseImage != null)
         {
             pauseImage.gameObject.SetActive(false);
@@ -81,7 +90,33 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     }
 
-   
+    void ShowCorrectImage()
+    {
+        if (correctImage != null)
+        {
+            correctImage.gameObject.SetActive(true); // 顯示正確圖片
+        }
+
+        if (audioSource != null && correctSound != null)
+        {
+            audioSource.PlayOneShot(correctSound); // 播放正確音效
+        }
+    }
+
+    void ShowIncorrectImage()
+    {
+        if (incorrectImage != null)
+        {
+            incorrectImage.gameObject.SetActive(true); // 顯示錯誤圖片
+        }
+
+        if (audioSource != null && incorrectSound != null)
+        {
+            audioSource.PlayOneShot(incorrectSound); // 播放錯誤音效
+        }
+    }
+
+
     void Update()
     {
         // 如果燈開啟且還沒顯示圖片，則顯示圖片並暫停遊戲
@@ -141,12 +176,24 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     void GenerateColorSequenceForCube(GameObject cube)
     {
-        int sequenceLength = Random.Range(3, 3); // 隨機生成 3 到 5 的顏色序列長度
+        int sequenceLength = 3; // 設定顏色序列長度為3
         Color[] colorSequence = new Color[sequenceLength]; // 初始化顏色序列
 
-        for (int i = 0; i < sequenceLength; i++)
+        if (firstCube == null)
         {
-            colorSequence[i] = colors[Random.Range(0, colors.Length)]; // 隨機選擇顏色
+            // 設定第一個 Cube
+            firstCube = cube; // 記錄第一個 Cube
+            colorSequence[0] = Color.yellow;
+            colorSequence[1] = Color.yellow;
+            colorSequence[2] = new Color(0.6f, 1f, 1f);
+        }
+        else
+        {
+            // 其他 Cube 隨機顏色
+            for (int i = 0; i < sequenceLength; i++)
+            {
+                colorSequence[i] = colors[Random.Range(0, colors.Length)];
+            }
         }
 
         cubeColorSequences[cube] = colorSequence; // 為該CUBE儲存顏色序列
@@ -154,7 +201,6 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     IEnumerator DisplayColorSequence(GameObject cube)
     {
-        // 獲取該物體的Renderer
         Renderer cubeRenderer = cube.GetComponent<Renderer>();
 
         // 先關閉發光效果
@@ -166,48 +212,44 @@ public class ColorSequenceGenerator : MonoBehaviour
             Color currentColor = cubeColorSequences[cube][i];
 
             // 設置發光顏色
-            cubeRenderer.material.SetColor("_EmissionColor", currentColor); // 設置發光顏色
-            DynamicGI.SetEmissive(cubeRenderer, currentColor); // 更新全局光照系統
+            cubeRenderer.material.SetColor("_EmissionColor", currentColor);
+            DynamicGI.SetEmissive(cubeRenderer, currentColor);
 
-            // 執行顏色漸變
+            // 顏色漸變
             yield return StartCoroutine(ColorFade(cube, currentColor, 0.15f));
+            yield return new WaitForSeconds(0.15f); // 顯示顏色
 
-            yield return new WaitForSeconds(0.15f); // 顯示顏色多少秒
-
-            // 重置顏色為原始顏色
-            yield return StartCoroutine(ColorFade(cube, Color.white, 0.15f)); // 漸變回白色
+            // 漸變回白色
+            yield return StartCoroutine(ColorFade(cube, Color.white, 0.15f));
 
             // 重置發光顏色
-            cubeRenderer.material.SetColor("_EmissionColor", Color.black); // 重置發光顏色為黑色
-            DynamicGI.SetEmissive(cubeRenderer, Color.black); // 更新全局光照系統
+            cubeRenderer.material.SetColor("_EmissionColor", Color.black);
+            DynamicGI.SetEmissive(cubeRenderer, Color.black);
 
-            yield return new WaitForSeconds(0.15f); // 等待多少秒再顯示下一個顏色
+            yield return new WaitForSeconds(0.15f); // 等待下一個顏色
         }
 
-        // 只對第一個Cube顯示圖片並暫停遊戲
-        if (!isFirstCubeComplete)
+        // **只對第一個 Cube 顯示圖片並暫停遊戲**
+        if (cube == firstCube) // 用 firstCube 來判斷
         {
             // 顯示圖片
             if (pauseImage != null)
             {
-                pauseImage.gameObject.SetActive(true); // 顯示圖片
+                pauseImage.gameObject.SetActive(true);
             }
 
             // 停止遊戲並等待玩家按鍵
-            Time.timeScale = 0f; // 停止遊戲
+            Time.timeScale = 0f;
 
             // 等待玩家按下任意鍵
             yield return new WaitUntil(() => Input.anyKeyDown);
 
             // 重新啟動遊戲並隱藏圖片
-            Time.timeScale = 1f; // 恢復遊戲
+            Time.timeScale = 1f;
             if (pauseImage != null)
             {
-                pauseImage.gameObject.SetActive(false); // 隱藏圖片
+                pauseImage.gameObject.SetActive(false);
             }
-
-            // 設置第一個Cube已完成
-            isFirstCubeComplete = true;
         }
 
         // 開始接受輸入

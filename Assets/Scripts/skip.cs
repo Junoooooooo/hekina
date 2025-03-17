@@ -3,14 +3,25 @@ using UnityEngine.SceneManagement;
 
 public class skip : MonoBehaviour
 {
+    private float rightClickTime = 0f; // 記錄右鍵按下的時間
+    private float holdDuration = 2f; // 需要長按的時間（4秒）
     private void Update()
     {
-        // 檢測玩家是否按下按鍵 M 進入下一關
-        if (Input.GetKeyDown(KeyCode.M))
+        // 檢測長按滑鼠右鍵
+        if (Input.GetMouseButton(1)) // 1 代表滑鼠右鍵
         {
-            GoToNextLevel(); // 呼叫進入下一關的方法
+            rightClickTime += Time.deltaTime;
+            if (rightClickTime >= holdDuration)
+            {
+                GoToNextLevel(); // 呼叫進入下一關的方法
+                rightClickTime = 0f; // 重置計時器
+            }
         }
-
+        else
+        {
+            rightClickTime = 0f; // 若鬆開按鍵則重置時間
+        }
+    
         // 檢測玩家是否按下 ESC 鍵退出遊戲
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -26,10 +37,6 @@ public class skip : MonoBehaviour
         // 根據當前場景名稱切換到下一關
        if (currentSceneName == "dia1")
         {
-            SceneManager.LoadScene("instruction1");
-        }
-        else if (currentSceneName == "instruction1")
-        {
             SceneManager.LoadScene("level1");
         }
         else if (currentSceneName == "level1")
@@ -37,10 +44,6 @@ public class skip : MonoBehaviour
             SceneManager.LoadScene("dia2");
         }
         else if (currentSceneName == "dia2")
-        {
-            SceneManager.LoadScene("instruction2");
-        }
-        else if (currentSceneName == "instruction2")
         {
             SceneManager.LoadScene("level2");
         }
@@ -50,20 +53,14 @@ public class skip : MonoBehaviour
         }
         else if (currentSceneName == "dia3")
         {
-            SceneManager.LoadScene("instruction3");
-        }
-        else if (currentSceneName == "instruction3")
-        {
             SceneManager.LoadScene("level3");
         }
         else if (currentSceneName == "level3")
         {
             SceneManager.LoadScene("end");
         }
-        else if (currentSceneName == "end")
-        {
-            SceneManager.LoadScene("start");
-        }
+
+
         else
         {
             Debug.Log("已經是最後一關或未定義的關卡！"); // 當沒有下一關時輸出提示
