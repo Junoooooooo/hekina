@@ -195,7 +195,7 @@ public class CrosshairAim : MonoBehaviour
 
             if (currentTarget != null)
             {
-                jumpTargetPosition = currentTarget.transform.position + Vector3.up * 5f;
+                jumpTargetPosition = currentTarget.transform.position + Vector3.up * 10f;
             }
         }
     }

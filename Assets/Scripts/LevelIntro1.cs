@@ -13,7 +13,7 @@ public class LevelIntro1 : MonoBehaviour
     public GameObject player;          // 角色物件
     public GameObject enemies;         // 敵人物件 (如果有)
     public Image endImage;             // 第一張結束圖片
-    public Image nextImage;            // 第二張圖片 (長按 3 秒空白鍵後顯示)
+    //public Image nextImage;            // 第二張圖片 (長按 3 秒空白鍵後顯示)
     public AudioSource introAudioSource; // 關卡動畫音樂
     public AudioSource mainAudioSource; // 遊戲背景音樂
     public AudioClip introMusic;       // 關卡動畫的音樂 (mp3 或 wav)
@@ -65,7 +65,7 @@ public class LevelIntro1 : MonoBehaviour
         if (player != null) player.SetActive(false);
         if (enemies != null) enemies.SetActive(false);
         if (endImage != null) endImage.gameObject.SetActive(false);
-        if (nextImage != null) nextImage.gameObject.SetActive(false);
+       // if (nextImage != null) nextImage.gameObject.SetActive(false);
 
         if (introAudioSource != null && introMusic != null)
         {
@@ -105,24 +105,20 @@ public class LevelIntro1 : MonoBehaviour
         }
     }
 
-    void Update()
+   void Update()
     {
         if (showEndImage && Input.GetMouseButton(1))
         {
             StartGame();
-            if (spawnManager != null)
-            {
-                StartCoroutine(spawnManager.SpawnCubes());  // 
-            }
         }
 
-        if (gameStarted && !showNextImage)
+       /* if (gameStarted && !showNextImage)
         {
             if (Input.GetKey(KeyCode.Space))
             {
                 spaceKeyPressTime += Time.deltaTime;
 
-                if (spaceKeyPressTime >= 3f)  // 長按 3 秒
+               /* if (spaceKeyPressTime >= 3f)  // 長按 3 秒
                 {
                     if (nextImage != null)
                     {
@@ -137,10 +133,10 @@ public class LevelIntro1 : MonoBehaviour
             {
                 spaceKeyPressTime = 0f;
             }
-        }
+        }*/
 
         // 如果顯示 nextImage，並且玩家按下任意鍵
-        if (showNextImage && Input.GetMouseButton(1))
+        /*if (showNextImage && Input.GetMouseButton(1))
         {
             if (nextImage != null)
             {
@@ -149,9 +145,9 @@ public class LevelIntro1 : MonoBehaviour
 
             // 恢復遊戲並啟動玩家和敵人
             StartGame();
-        }
+        }*/
     }
-
+    
     void StartGame()
     {
         if (endImage != null) endImage.gameObject.SetActive(false);
@@ -165,6 +161,6 @@ public class LevelIntro1 : MonoBehaviour
         gameStarted = true;
 
         Time.timeScale = 1f; // 恢復遊戲
-
+    
     }
 }

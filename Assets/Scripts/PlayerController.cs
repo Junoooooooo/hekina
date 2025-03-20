@@ -13,8 +13,8 @@ public class PlayerController : MonoBehaviour
     public GameObject cubePrefab;               // 立方體預製體
     public float existenceTime = 5f; // 立方體存在時間
 
-  public float minCubeSpawnInterval = 1f;    // 生成間隔的最小值
-  public float maxCubeSpawnInterval = 3f;    // 生成間隔的最大值
+    public float minCubeSpawnInterval = 1f;    // 生成間隔的最小值
+    public float maxCubeSpawnInterval = 3f;    // 生成間隔的最大值
     public Slider energyBar;                    // 能量量條的 UI 元件
   
 
@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Time.timeScale: " + Time.timeScale); // 確認時間縮放狀態
         UpdateTimer();
         HandleInput();
-        UpdateEnergy();
+        //UpdateEnergy();
         UpdateLightIntensity(); // 更新燈光亮度
         if (Time.timeScale > 0 && Input.GetMouseButtonDown(0))
         {
@@ -155,7 +155,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void UpdateEnergyBar()
+   public void UpdateEnergyBar()
     {
         if (energyBar != null)
         {

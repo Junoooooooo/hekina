@@ -41,7 +41,7 @@ public class ColorSequenceGenerator : MonoBehaviour
     private Dictionary<GameObject, bool> isInputActive = new Dictionary<GameObject, bool>(); // 每個CUBE是否可接受輸入
     private Dictionary<GameObject, bool> hasTriggered = new Dictionary<GameObject, bool>(); // 每個CUBE是否已觸發顏色生成
 
-    private Color[] colors = { new Color(1f, 0.3f, 0.5f), Color.yellow, new Color(0.6f, 1f, 1f) }; // 可用顏色
+    private Color[] colors = { new Color(1f, 0.3f, 0.5f), Color.yellow, new Color(0.6f, 1f, 1f),  new Color(1f, 0.5f, 0f), Color.white}; // 可用顏色
 
     private bool isFirstCubeComplete = false; // 紀錄第一個 Cube 是否完成顏色序列
 
@@ -56,10 +56,10 @@ public class ColorSequenceGenerator : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>(); // 如果沒有 AudioSource，就添加一個
         }
 
-        if (secondImage != null)
+      /*  if (secondImage != null)
         {
             secondImage.gameObject.SetActive(false);
-        }
+        }*/
         foreach (var cubeLightInfo in cubeLightInfos)
         {
             GameObject cube = cubeLightInfo.cube;
@@ -120,7 +120,7 @@ public class ColorSequenceGenerator : MonoBehaviour
     void Update()
     {
         // 如果燈開啟且還沒顯示圖片，則顯示圖片並暫停遊戲
-        if (mylight.enabled && !hasShownImage && !isPaused)
+       /* if (mylight.enabled && !hasShownImage && !isPaused)
         {
             secondImage.gameObject.SetActive(true);
             Debug.Log("顯示第二張圖片");
@@ -136,7 +136,7 @@ public class ColorSequenceGenerator : MonoBehaviour
             Time.timeScale = 1f; // 恢復遊戲
             isPaused = false; // 解除暫停狀態
             Debug.Log("隱藏第二張圖片");
-        }
+        }*/
 
         // 如果燈關閉，則允許下一次重新觸發
         if (!mylight.enabled)
@@ -170,13 +170,21 @@ public class ColorSequenceGenerator : MonoBehaviour
                 {
                     CheckInput(cube, new Color(1f, 0.3f, 0.5f));
                 }
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    CheckInput(cube, new Color(1f, 0.5f, 0f));
+                }
+                if (Input.GetKeyDown(KeyCode.Mouse1))
+                {
+                    CheckInput(cube, Color.white);
+                }
             }
         }
     }
 
     void GenerateColorSequenceForCube(GameObject cube)
     {
-        int sequenceLength = 3; // 設定顏色序列長度為3
+        int sequenceLength = 1; // 設定顏色序列長度為3
         Color[] colorSequence = new Color[sequenceLength]; // 初始化顏色序列
 
         if (firstCube == null)
@@ -184,8 +192,7 @@ public class ColorSequenceGenerator : MonoBehaviour
             // 設定第一個 Cube
             firstCube = cube; // 記錄第一個 Cube
             colorSequence[0] = Color.yellow;
-            colorSequence[1] = Color.yellow;
-            colorSequence[2] = new Color(0.6f, 1f, 1f);
+
         }
         else
         {

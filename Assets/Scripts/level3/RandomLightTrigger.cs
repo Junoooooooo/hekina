@@ -22,7 +22,7 @@ public class RandomLightTrigger : MonoBehaviour
 
     private bool hasTriggered = false; // 確保只觸發一次
     private int correctKeyPresses = 0; // 記錄成功按下的光點數量
-    private int totalCorrectPressesRequired = 5; // 需要成功按下的光點數量
+    private int totalCorrectPressesRequired = 3; // 需要成功按下的光點數量
 
     private void OnTriggerEnter(Collider other)
     {
