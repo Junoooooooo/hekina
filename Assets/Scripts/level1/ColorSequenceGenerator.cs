@@ -17,8 +17,6 @@ public class ColorSequenceGenerator : MonoBehaviour
     public float triggerDistance = 15f; // 距離CUBE多少時開始生成顏色
     public GameObject colorObjectPrefab; // 顏色物件的預製件
     public CubeLightInfo[] cubeLightInfos; // 存放每個CUBE及其對應燈光的資訊
-    private bool isFirstSequenceComplete = false;
-
 
     // 新增：UI 圖片來顯示
     public Image pauseImage; // 用來顯示的圖片
@@ -36,6 +34,7 @@ public class ColorSequenceGenerator : MonoBehaviour
 
 
 
+
     private Dictionary<GameObject, Color[]> cubeColorSequences = new Dictionary<GameObject, Color[]>(); // 每個CUBE的顏色序列
     private Dictionary<GameObject, int> currentInputIndex = new Dictionary<GameObject, int>(); // 每個CUBE當前的輸入索引
     private Dictionary<GameObject, bool> isInputActive = new Dictionary<GameObject, bool>(); // 每個CUBE是否可接受輸入
@@ -47,7 +46,7 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     void Start()
     {
-
+       
         mylight = GetComponent<Light>();
         mylight.enabled = false;
 
@@ -297,7 +296,6 @@ public class ColorSequenceGenerator : MonoBehaviour
                 correctImage.gameObject.SetActive(true);
                 Invoke("HideWrongImage", 0.5f);
             }
-
             // 隱藏錯誤圖案
             if (incorrectImage != null)
             {
@@ -359,9 +357,6 @@ public class ColorSequenceGenerator : MonoBehaviour
             Invoke("HideWrongImage", 0.5f);
         }
     }
-
- 
-
 
     void HideWrongImage()
     {
