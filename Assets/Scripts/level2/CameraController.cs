@@ -5,6 +5,7 @@ public class CameraController : MonoBehaviour
 {
     public float moveSpeed = 10f;
     public float rotationSpeed = 100f;
+
     private Rigidbody rb;
     private Quaternion targetRotation;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-namespace TravisGameAssets
+/*namespace TravisGameAssets
 {
 	
 	public class HitImpactEffectsPreview : MonoBehaviour
@@ -220,4 +220,4 @@ namespace TravisGameAssets
 		}
 
 	}
-}
+}*/

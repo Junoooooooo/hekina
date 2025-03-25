@@ -6,6 +6,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class CubeLightInfo
 {
+
     public GameObject cube; // CUBE物件
     public Light[] lights; // 與該CUBE對應的燈光
     public GameObject[] emissiveObjects; // 與該CUBE對應的發光物件
@@ -26,7 +27,7 @@ public class ColorSequenceGenerator : MonoBehaviour
     public AudioSource audioSource; // 用於播放音效
     public AudioClip correctSound;  // 正確音效
     public AudioClip incorrectSound; // 錯誤音效
-
+   
     private Light mylight;
     private bool hasShownImage = false; // 確保圖片只顯示一次
     private bool isPaused = false; // 控制是否遊戲暫停
@@ -43,10 +44,8 @@ public class ColorSequenceGenerator : MonoBehaviour
     private Color[] colors = { new Color(1f, 0.3f, 0.5f), Color.yellow, new Color(0.6f, 1f, 1f),  new Color(1f, 0.5f, 0f), Color.white}; // 可用顏色
 
     private bool isFirstCubeComplete = false; // 紀錄第一個 Cube 是否完成顏色序列
-
     void Start()
     {
-       
         mylight = GetComponent<Light>();
         mylight.enabled = false;
 
@@ -74,14 +73,14 @@ public class ColorSequenceGenerator : MonoBehaviour
             }
         }
 
-        if (correctImage != null)
+       /* if (correctImage != null)
         {
             correctImage.gameObject.SetActive(false);
         }
         if (incorrectImage != null)
         {
             incorrectImage.gameObject.SetActive(false);
-        }
+        }*/
         if (pauseImage != null)
         {
             pauseImage.gameObject.SetActive(false);
@@ -290,9 +289,11 @@ public class ColorSequenceGenerator : MonoBehaviour
             Debug.Log("Correct color for Cube: " + cube.name);
             currentInputIndex[cube]++;
 
+           
             // 顯示正確圖案
             if (correctImage != null)
             {
+                
                 correctImage.gameObject.SetActive(true);
                 Invoke("HideWrongImage", 0.5f);
             }
@@ -304,7 +305,7 @@ public class ColorSequenceGenerator : MonoBehaviour
 
             // 若玩家輸入完整序列
             if (currentInputIndex[cube] >= colorSequence.Length)
-            {
+            {                
                 Debug.Log("Cube " + cube.name + " sequence completed!");
 
                 // 獲取 Cube 對應的燈光
@@ -372,7 +373,6 @@ public class ColorSequenceGenerator : MonoBehaviour
             correctImage.gameObject.SetActive(false); // 隱藏正確圖案
         }
     }
-
 
 
     CubeLightInfo GetCubeLightInfo(GameObject cube)
