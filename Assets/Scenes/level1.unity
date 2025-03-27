@@ -623,7 +623,6 @@ MonoBehaviour:
   pauseImage: {fileID: 1569991100}
   correctImage: {fileID: 1699387128}
   incorrectImage: {fileID: 962312185}
-  secondImage: {fileID: 0}
   audioSource: {fileID: 0}
   correctSound: {fileID: 0}
   incorrectSound: {fileID: 0}
@@ -6010,6 +6009,7 @@ MonoBehaviour:
   mainAudioSource: {fileID: 963194232}
   introMusic: {fileID: 8300000, guid: 3a7baa8ebe2555d458a46e9cee3fcdeb, type: 3}
   frameRate: 24
+  endImage: {fileID: 1569991100}
 --- !u!4 &1065397200
 Transform:
   m_ObjectHideFlags: 0
@@ -8429,9 +8429,8 @@ MonoBehaviour:
   pauseImage: {fileID: 1569991100}
   correctImage: {fileID: 1699387128}
   incorrectImage: {fileID: 962312185}
-  secondImage: {fileID: 0}
   audioSource: {fileID: 1481401756}
-  correctSound: {fileID: 8300000, guid: 8d0191a79bd36ab4eb0f7cb2db698a78, type: 3}
+  correctSound: {fileID: 8300000, guid: 3a7baa8ebe2555d458a46e9cee3fcdeb, type: 3}
   incorrectSound: {fileID: 8300000, guid: 594057ab509afed4995626e62d45333c, type: 3}
 --- !u!82 &1481401756
 AudioSource:
@@ -8443,7 +8442,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8d0191a79bd36ab4eb0f7cb2db698a78, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 3a7baa8ebe2555d458a46e9cee3fcdeb, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -14619,8 +14618,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a60d944a020b06542897ad594cdc463a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  turnSpeed: 70
+  speed: 0.7
+  turnSpeed: 50
 --- !u!54 &919132149525322699
 Rigidbody:
   m_ObjectHideFlags: 0

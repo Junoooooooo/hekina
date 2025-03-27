@@ -7,11 +7,16 @@ public class StarDisappear : MonoBehaviour
     [Header("UI 相關")]
     public GameObject dialoguePanel; // UI 對話框
     public Text dialogueText; // UI 文字
+    public Image characterPortrait; // 頭像顯示
+
+    [Header("頭像")]
+    public Sprite[] startPortraits;  // 開始對話的頭像
+    public Sprite[] finishPortraits; // 完成對話的頭像
 
     [Header("音效")]
     public AudioClip normalStarSound; // 一般星星音效
     public AudioClip finishStarSound; // FINISH 星星音效
-    private AudioSource audioSource; // 音效播放元件
+    private AudioSource audioSource;  // 音效播放元件
 
     private string[] startDialogues =
     {
@@ -29,7 +34,7 @@ public class StarDisappear : MonoBehaviour
     };
 
     private int dialogueIndex = 0;
-    private bool isDialogueActive = false; // 確保對話只在需要時出現
+    private bool isDialogueActive = false;      // 確保對話只在需要時出現
     private bool isFinishDialogueActive = false; // 是否顯示完成對話框
 
     void Start()
@@ -37,6 +42,11 @@ public class StarDisappear : MonoBehaviour
         if (dialoguePanel != null)
         {
             dialoguePanel.SetActive(false); // 一開始隱藏對話框
+        }
+
+        if (characterPortrait != null)
+        {
+            characterPortrait.enabled = false; // 一開始隱藏頭像
         }
 
         audioSource = gameObject.AddComponent<AudioSource>(); // 自動添加 AudioSource 組件
@@ -78,8 +88,9 @@ public class StarDisappear : MonoBehaviour
         if (dialoguePanel != null && dialogueText != null)
         {
             dialoguePanel.SetActive(true); // 顯示對話框
+            characterPortrait.enabled = true; // 顯示頭像
             dialogueIndex = 0;
-            dialogueText.text = startDialogues[dialogueIndex]; // 顯示第一句
+            UpdateDialogueUI(startDialogues, startPortraits);
             isDialogueActive = true;
         }
     }
@@ -89,8 +100,9 @@ public class StarDisappear : MonoBehaviour
         if (dialoguePanel != null && dialogueText != null)
         {
             dialoguePanel.SetActive(true); // 顯示對話框
+            characterPortrait.enabled = true; // 顯示頭像
             dialogueIndex = 0;
-            dialogueText.text = finishDialogues[dialogueIndex]; // 顯示第一句
+            UpdateDialogueUI(finishDialogues, finishPortraits);
             isFinishDialogueActive = true;
         }
     }
@@ -114,12 +126,11 @@ public class StarDisappear : MonoBehaviour
 
         if (dialogueIndex < startDialogues.Length)
         {
-            dialogueText.text = startDialogues[dialogueIndex]; // 顯示下一句
+            UpdateDialogueUI(startDialogues, startPortraits);
         }
         else
         {
-            dialoguePanel.SetActive(false); // 對話結束後關閉對話框
-            isDialogueActive = false;
+            EndDialogue();
         }
     }
 
@@ -129,14 +140,31 @@ public class StarDisappear : MonoBehaviour
 
         if (dialogueIndex < finishDialogues.Length)
         {
-            dialogueText.text = finishDialogues[dialogueIndex]; // 顯示下一句
+            UpdateDialogueUI(finishDialogues, finishPortraits);
         }
         else
         {
-            dialoguePanel.SetActive(false); // 對話結束後關閉對話框
-            isFinishDialogueActive = false;
+            EndDialogue();
             Invoke("LoadNextScene", 2f); // 延遲 2 秒後切換場景
         }
+    }
+
+    void UpdateDialogueUI(string[] dialogues, Sprite[] portraits)
+    {
+        dialogueText.text = dialogues[dialogueIndex]; // 更新對話內容
+
+        if (portraits != null && dialogueIndex < portraits.Length)
+        {
+            characterPortrait.sprite = portraits[dialogueIndex]; // 更新對應的頭像
+        }
+    }
+
+    void EndDialogue()
+    {
+        dialoguePanel.SetActive(false); // 隱藏對話框
+        characterPortrait.enabled = false; // 隱藏頭像
+        isDialogueActive = false;
+        isFinishDialogueActive = false;
     }
 
     void LoadNextScene()

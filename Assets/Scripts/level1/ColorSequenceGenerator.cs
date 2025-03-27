@@ -23,7 +23,6 @@ public class ColorSequenceGenerator : MonoBehaviour
     public Image pauseImage; // 用來顯示的圖片
     public Image correctImage; // 顯示正確圖案
     public Image incorrectImage; // 顯示錯誤圖案
-    public Image secondImage;
     public AudioSource audioSource; // 用於播放音效
     public AudioClip correctSound;  // 正確音效
     public AudioClip incorrectSound; // 錯誤音效
@@ -73,14 +72,7 @@ public class ColorSequenceGenerator : MonoBehaviour
             }
         }
 
-       /* if (correctImage != null)
-        {
-            correctImage.gameObject.SetActive(false);
-        }
-        if (incorrectImage != null)
-        {
-            incorrectImage.gameObject.SetActive(false);
-        }*/
+ 
         if (pauseImage != null)
         {
             pauseImage.gameObject.SetActive(false);
@@ -88,54 +80,8 @@ public class ColorSequenceGenerator : MonoBehaviour
 
     }
 
-    void ShowCorrectImage()
-    {
-        if (correctImage != null)
-        {
-            correctImage.gameObject.SetActive(true); // 顯示正確圖片
-        }
-
-        if (audioSource != null && correctSound != null)
-        {
-            audioSource.PlayOneShot(correctSound); // 播放正確音效
-        }
-    }
-
-    void ShowIncorrectImage()
-    {
-        if (incorrectImage != null)
-        {
-            incorrectImage.gameObject.SetActive(true); // 顯示錯誤圖片
-        }
-
-        if (audioSource != null && incorrectSound != null)
-        {
-            audioSource.PlayOneShot(incorrectSound); // 播放錯誤音效
-        }
-    }
-
-
     void Update()
-    {
-        // 如果燈開啟且還沒顯示圖片，則顯示圖片並暫停遊戲
-       /* if (mylight.enabled && !hasShownImage && !isPaused)
-        {
-            secondImage.gameObject.SetActive(true);
-            Debug.Log("顯示第二張圖片");
-            Time.timeScale = 0f; // 暫停遊戲
-            hasShownImage = true;
-            isPaused = true; // 設定為暫停狀態
-        }
-
-        // 如果遊戲已暫停（Time.timeScale == 0），且按下任何鍵，則關閉圖片並恢復遊戲
-        if (isPaused && Input.anyKeyDown)
-        {
-            secondImage.gameObject.SetActive(false);
-            Time.timeScale = 1f; // 恢復遊戲
-            isPaused = false; // 解除暫停狀態
-            Debug.Log("隱藏第二張圖片");
-        }*/
-
+    {      
         // 如果燈關閉，則允許下一次重新觸發
         if (!mylight.enabled)
         {
@@ -185,21 +131,12 @@ public class ColorSequenceGenerator : MonoBehaviour
         int sequenceLength = 1; // 設定顏色序列長度為3
         Color[] colorSequence = new Color[sequenceLength]; // 初始化顏色序列
 
-        if (firstCube == null)
-        {
-            // 設定第一個 Cube
-            firstCube = cube; // 記錄第一個 Cube
-            colorSequence[0] = Color.yellow;
-
-        }
-        else
-        {
             // 其他 Cube 隨機顏色
             for (int i = 0; i < sequenceLength; i++)
             {
                 colorSequence[i] = colors[Random.Range(0, colors.Length)];
             }
-        }
+        
 
         cubeColorSequences[cube] = colorSequence; // 為該CUBE儲存顏色序列
     }
@@ -234,28 +171,7 @@ public class ColorSequenceGenerator : MonoBehaviour
             yield return new WaitForSeconds(0.15f); // 等待下一個顏色
         }
 
-        // **只對第一個 Cube 顯示圖片並暫停遊戲**
-        if (cube == firstCube) // 用 firstCube 來判斷
-        {
-            // 顯示圖片
-            if (pauseImage != null)
-            {
-                pauseImage.gameObject.SetActive(true);
-            }
-
-            // 停止遊戲並等待玩家按鍵
-            Time.timeScale = 0f;
-
-            // 等待玩家按下任意鍵
-            yield return new WaitUntil(() => Input.anyKeyDown);
-
-            // 重新啟動遊戲並隱藏圖片
-            Time.timeScale = 1f;
-            if (pauseImage != null)
-            {
-                pauseImage.gameObject.SetActive(false);
-            }
-        }
+       
 
         // 開始接受輸入
         isInputActive[cube] = true;
@@ -283,26 +199,17 @@ public class ColorSequenceGenerator : MonoBehaviour
     {
         Color[] colorSequence = cubeColorSequences[cube];
 
+        if (correctSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(correctSound);
+        }
+
         // 檢查玩家的輸入是否與顏色序列匹配
         if (inputColor == colorSequence[currentInputIndex[cube]])
         {
             Debug.Log("Correct color for Cube: " + cube.name);
             currentInputIndex[cube]++;
-
-           
-            // 顯示正確圖案
-            if (correctImage != null)
-            {
-                
-                correctImage.gameObject.SetActive(true);
-                Invoke("HideWrongImage", 0.5f);
-            }
-            // 隱藏錯誤圖案
-            if (incorrectImage != null)
-            {
-                incorrectImage.gameObject.SetActive(false);
-            }
-
+          
             // 若玩家輸入完整序列
             if (currentInputIndex[cube] >= colorSequence.Length)
             {                
@@ -340,37 +247,13 @@ public class ColorSequenceGenerator : MonoBehaviour
         }
         else
         {
-            Debug.Log("Wrong color input for Cube: " + cube.name);
-
-            // 顯示錯誤圖案
-            if (incorrectImage != null)
+            // 播放錯誤的音效
+            if (incorrectSound != null && audioSource != null)
             {
-                incorrectImage.gameObject.SetActive(true);
+                audioSource.PlayOneShot(incorrectSound);
             }
 
-            // 隱藏正確圖案
-            if (correctImage != null)
-            {
-                correctImage.gameObject.SetActive(false);
-            }
-
-            // 0.5秒後隱藏錯誤圖片
-            Invoke("HideWrongImage", 0.5f);
-        }
-    }
-
-    void HideWrongImage()
-    {
-        // 隱藏錯誤圖片
-        if (incorrectImage != null)
-        {
-            incorrectImage.gameObject.SetActive(false); // 隱藏錯誤圖案
-        }
-
-        // 隱藏正確圖片
-        if (correctImage != null)
-        {
-            correctImage.gameObject.SetActive(false); // 隱藏正確圖案
+            Debug.Log("Incorrect color for Cube: " + cube.name);
         }
     }
 
