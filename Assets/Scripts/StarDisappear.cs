@@ -22,7 +22,7 @@ public class StarDisappear : MonoBehaviour
     {
         "這裡有幾顆發光的星星。",
         "請依照顏色收集它們：紅色、黃色、藍色。",
-        "使用方向鍵來移動，前往收集它們吧！"
+        "使用方向鍵及跳躍來移動，前往收集它們吧！",
     };
 
     private string[] finishDialogues =

@@ -84,7 +84,12 @@ public class DoorUnlock : MonoBehaviour
     private void HandleInput()
     {
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) ||
+    Input.GetKey(KeyCode.UpArrow) ||
+    Input.GetKey(KeyCode.DownArrow) ||
+    Input.GetKey(KeyCode.LeftArrow) ||
+    Input.GetKey(KeyCode.RightArrow) ||
+    Input.GetMouseButton(0)) // ·Æ¹«¥ªÁä)
         {
 
             isHoldingSpace = true;

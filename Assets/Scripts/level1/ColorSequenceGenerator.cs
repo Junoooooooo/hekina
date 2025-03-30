@@ -118,9 +118,13 @@ public class ColorSequenceGenerator : MonoBehaviour
                 {
                     CheckInput(cube, new Color(1f, 0.5f, 0f));
                 }
-                if (Input.GetKeyDown(KeyCode.Mouse1))
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
                     CheckInput(cube, Color.white);
+                }
+                if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    CheckInput(cube, new Color(0.5f, 0.5f, 0.5f));
                 }
             }
         }

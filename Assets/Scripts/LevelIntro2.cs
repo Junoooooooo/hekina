@@ -141,7 +141,7 @@ public class LevelIntro2 : MonoBehaviour
     void Update()
     {
         // 檢查是否按下滑鼠右鍵
-        if (Time.timeScale == 0f && Input.GetMouseButtonDown(1)) // 右鍵是 1
+        if (Time.timeScale == 0f && Input.anyKey) // 右鍵是 1
         {
             ResumeGame(); // 呼叫恢復遊戲的方法
         }

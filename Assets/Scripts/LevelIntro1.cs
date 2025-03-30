@@ -107,7 +107,7 @@ public class LevelIntro1 : MonoBehaviour
 
    void Update()
     {
-        if (showEndImage && Input.GetMouseButton(1))
+        if (showEndImage && Input.anyKey)
         {
             StartGame();
         }
