@@ -22,14 +22,22 @@ public class CameraMovement : MonoBehaviour
 
     void MoveCamera()
     {
-        float moveZ = Input.GetAxis("Vertical"); // W / S 控制前進與後退
+        float moveZ = 0f;
+
+        if (Input.GetKey(KeyCode.W)) moveZ = 1f; // 只允許 W 鍵前進
+        if (Input.GetKey(KeyCode.S)) moveZ = -1f; // 只允許 S 鍵後退
+
         Vector3 move = transform.forward * moveZ * moveSpeed * Time.deltaTime;
         transform.position += move;
     }
 
     void RotateCamera()
     {
-        float rotateY = Input.GetAxis("Horizontal"); // A / D 控制左右旋轉
+        float rotateY = 0f;
+
+        if (Input.GetKey(KeyCode.A)) rotateY = -1f; // 只允許 A 鍵左轉
+        if (Input.GetKey(KeyCode.D)) rotateY = 1f; // 只允許 D 鍵右轉
+
         transform.Rotate(Vector3.up * rotateY * rotationSpeed * Time.deltaTime);
     }
 

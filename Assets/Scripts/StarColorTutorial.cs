@@ -7,7 +7,7 @@ public class StarColorTutorial : MonoBehaviour
     public Light tutorialLight; // 場景中的燈光
     public AudioSource correctSound, wrongSound; // 成功/失敗音效
 
-    private Color[] starColors = { Color.red, Color.blue, Color.yellow }; // 固定順序
+    private Color[] starColors = { Color.red, new Color(0.2f, 0.4f, 0.5f), Color.yellow }; // 固定順序
     private KeyCode[] keyBindings = { KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.UpArrow }; // 鍵盤對應
     private int currentStep = 0; // 當前步驟
     private Material starMaterial; // 星星材質
@@ -44,7 +44,7 @@ public class StarColorTutorial : MonoBehaviour
     {
         if (currentStep < starColors.Length)
         {
-            Color newEmission = starColors[currentStep] * 2.0f; // 增加亮度
+            Color newEmission = starColors[currentStep] * 1.0f; // 增加亮度
             starMaterial.SetColor("_EmissionColor", newEmission);
             starMaterial.EnableKeyword("_EMISSION"); // 確保 Emission 啟用
         }

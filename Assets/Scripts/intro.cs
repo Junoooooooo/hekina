@@ -18,7 +18,7 @@ public class intro : MonoBehaviour
         if (Input.anyKeyDown)
         {
             // 當按下任意鍵時，載入 Level1
-            SceneManager.LoadScene("dia1");
+            SceneManager.LoadScene("initial");
         }
     }
 }

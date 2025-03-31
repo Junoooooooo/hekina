@@ -6,8 +6,8 @@ public class RandomLightTrigger : MonoBehaviour
 {
     public GameObject[] lightPrefabs; // 可用光點的預置物件
     public BoxCollider spawnArea;    // 用於隨機生成的區域（需要 BoxCollider）
-    public int spawnCount = 10;      // 每層生成光點的數量
-    public float lightDuration = 1f; // 每個光點持續的時間（秒）
+    public int spawnCount = 20;      // 每層生成光點的數量
+    public float lightDuration = 5f; // 每個光點持續的時間（秒）
     public Vector2 spawnIntervalRange = new Vector2(0.5f, 2f); // 光點生成間隔的隨機範圍
 
     public KeyCode[] keyMappings;   // 自定義顏色對應的按鍵
@@ -62,7 +62,7 @@ public class RandomLightTrigger : MonoBehaviour
                 Random.Range(spawnArea.bounds.min.z, spawnArea.bounds.max.z)
             );
 
-            GameObject spawnedLight = Instantiate(lightPrefabs[randomColorIndex], randomPosition, Quaternion.identity);
+            GameObject spawnedLight = Instantiate(lightPrefabs[randomColorIndex], randomPosition, Quaternion.Euler(90, 0, 0));
             Renderer lightRenderer = spawnedLight.GetComponent<Renderer>();
             lightRenderer.material.color = randomColor;
             lightRenderer.material.SetColor("_EmissionColor", randomColor);
