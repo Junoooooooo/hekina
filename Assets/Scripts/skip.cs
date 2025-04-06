@@ -35,7 +35,15 @@ public class skip : MonoBehaviour
         string currentSceneName = SceneManager.GetActiveScene().name;
 
         // 根據當前場景名稱切換到下一關
-       if (currentSceneName == "dia1")
+        if (currentSceneName == "initial")
+        {
+            SceneManager.LoadScene("secondtutorial");
+        }
+        else if (currentSceneName == "secondtutorial")
+        {
+            SceneManager.LoadScene("dia1");
+        }
+        else if (currentSceneName == "dia1")
         {
             SceneManager.LoadScene("level1");
         }

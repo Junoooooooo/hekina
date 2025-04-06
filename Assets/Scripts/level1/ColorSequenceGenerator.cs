@@ -40,7 +40,7 @@ public class ColorSequenceGenerator : MonoBehaviour
     private Dictionary<GameObject, bool> isInputActive = new Dictionary<GameObject, bool>(); // 每個CUBE是否可接受輸入
     private Dictionary<GameObject, bool> hasTriggered = new Dictionary<GameObject, bool>(); // 每個CUBE是否已觸發顏色生成
 
-    private Color[] colors = { new Color(1f, 0.3f, 0.5f), Color.yellow, new Color(0.6f, 1f, 1f),  new Color(1f, 0.5f, 0f), Color.white}; // 可用顏色
+    private Color[] colors = {Color.yellow, new Color(0.6f, 1f, 1f),Color.red,  new Color(1f, 0.5f, 0f), Color.white, new Color(0.5f, 0.5f, 0.5f) }; // 可用顏色
 
     private bool isFirstCubeComplete = false; // 紀錄第一個 Cube 是否完成顏色序列
     void Start()
@@ -112,7 +112,7 @@ public class ColorSequenceGenerator : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.LeftArrow))
                 {
-                    CheckInput(cube, new Color(1f, 0.3f, 0.5f));
+                    CheckInput(cube, Color.red);
                 }
                 if (Input.GetKeyDown(KeyCode.Mouse0))
                 {

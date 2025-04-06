@@ -59,7 +59,7 @@ public class CarMovement : MonoBehaviour
     void TurnLeft()
     {
         // 更新目标旋转为当前旋转的左转 90 度
-        targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 15f, 0);
+        targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 10f, 0);
         Debug.Log("Turning Left (smooth)!");
     }
 
@@ -67,7 +67,7 @@ public class CarMovement : MonoBehaviour
     void TurnRight()
     {
         // 更新目标旋转为当前旋转的右转 90 度
-        targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 15f, 0);
+        targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 10f, 0);
         Debug.Log("Turning Right (smooth)!");
     }
 
@@ -97,6 +97,6 @@ public class CarMovement : MonoBehaviour
     }
     void LoadLevel2()
     {
-        SceneManager.LoadScene("level2"); // 替换成你实际的 Level2 场景名称
+        SceneManager.LoadScene("dia2"); // 替换成你实际的 Level2 场景名称
     }
 }
