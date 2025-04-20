@@ -16,7 +16,6 @@ public class DoorUnlock : MonoBehaviour
     public GameObject[] sephers; // 儲存需要隱藏的 SEPHER GameObject 陣列
     public AudioClip leftKeySound;  // 左鍵音效
     public AudioClip rightKeySound; // 右鍵音效
-    public AudioClip downKeySound; // 右鍵音效
     public Image nextImage;
     public float timeRemaining = 300f;    // 3分鐘 = 180秒
     public TMP_Text timerText;                  // 連接 UI 的 Text 元件
@@ -85,10 +84,7 @@ public class DoorUnlock : MonoBehaviour
     {
 
         if (Input.GetKey(KeyCode.Space) ||
-    Input.GetKey(KeyCode.UpArrow) ||
     Input.GetKey(KeyCode.DownArrow) ||
-    Input.GetKey(KeyCode.LeftArrow) ||
-    Input.GetKey(KeyCode.RightArrow) ||
     Input.GetMouseButton(0)) // 滑鼠左鍵)
         {
 
@@ -183,14 +179,6 @@ public class DoorUnlock : MonoBehaviour
             {
                 StartCoroutine(HandleInputWithDelay("right"));
             }
-            else if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                StartCoroutine(HandleInputWithDelay("up"));
-            }
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                StartCoroutine(HandleInputWithDelay("down"));
-            }
         }
     }
 
@@ -206,10 +194,6 @@ public class DoorUnlock : MonoBehaviour
         else if (input == "right")
         {
             PlaySound(rightKeySound); // 播放右鍵音效
-        }
-        else if (input == "down")
-        {
-            PlaySound(downKeySound); // 播放右鍵音效
         }
 
         HandleInput(input); // 處理輸入邏輯

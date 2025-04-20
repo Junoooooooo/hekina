@@ -8,7 +8,7 @@ public class skip : MonoBehaviour
     private void Update()
     {
         // ÀË´úªø«ö·Æ¹«¥kÁä
-        if (Input.GetKey(KeyCode.Space)) // 1 ¥Nªí·Æ¹«¥kÁä
+        if (Input.GetKey(KeyCode.Mouse1)) // 1 ¥Nªí·Æ¹«¥kÁä
         {
             rightClickTime += Time.deltaTime;
             if (rightClickTime >= holdDuration)

@@ -44,12 +44,12 @@ public class CarMovement : MonoBehaviour
     void HandleTurnInput()
     {
         // 检查左转输入
-        if (Input.GetKeyDown(KeyCode.A)) // MakeyMakey 左箭头按键
+        if (Input.GetKey(KeyCode.A)) // MakeyMakey 左箭头按键
         {
             TurnLeft();
         }
         // 检查右转输入
-        else if (Input.GetKeyDown(KeyCode.D)) // MakeyMakey 右箭头按键
+        else if (Input.GetKey(KeyCode.D)) // MakeyMakey 右箭头按键
         {
             TurnRight();
         }
